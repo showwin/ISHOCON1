@@ -6,13 +6,6 @@ require 'erubis'
 module Ishocon1
   class AuthenticationError < StandardError; end
   class PermissionDenied < StandardError; end
-  # class ContentNotFound < StandardError; end
-  module TimeWithoutZone
-    def to_s
-      strftime("%F %H:%M:%S")
-    end
-  end
-  ::Time.prepend TimeWithoutZone
 end
 
 class Ishocon1::WebApp < Sinatra::Base
@@ -64,6 +57,10 @@ class Ishocon1::WebApp < Sinatra::Base
       db.xquery('SELECT * FROM users WHERE id = ?', session[:user_id]).first
     end
 
+    def update_last_login(user_id)
+      db.xquery('UPDATE users SET last_login = ? WHERE id = ?', Time.now, user_id)
+    end
+
     def buy_product(product_id, user_id)
       db.xquery('INSERT INTO histories (product_id, user_id, created_at) VALUES (?, ?, ?)', \
         product_id, user_id, Time.now)
@@ -98,6 +95,7 @@ class Ishocon1::WebApp < Sinatra::Base
 
   post '/login' do
     authenticate params['email'], params['password']
+    update_last_login(current_user[:id])
     redirect '/'
   end
 
@@ -149,5 +147,12 @@ SQL
     authenticated!
     create_comment(params[:product_id], current_user[:id], params[:content])
     redirect "/users/#{current_user[:id]}"
+  end
+
+  get '/initialize' do
+    db.query('DELETE FROM users WHERE id > 5000')
+    db.query('DELETE FROM products WHERE id > 10000')
+    db.query('DELETE FROM comments WHERE id > 200000')
+    db.query('DELETE FROM histories WHERE id > 500000')
   end
 end
