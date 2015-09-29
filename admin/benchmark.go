@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/go-sql-driver/mysql"
@@ -12,6 +13,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -32,16 +34,21 @@ func ValidateInitialize() {
 	ValidateProducts(false)
 	ValidateUsers(1500, false)
 	id, email, password := GetUserInfo()
-	PostLogin(email, password)
-	BuyProduct(10000)
+	var c []*http.Cookie
+	_, c = PostLogin(c, email, password)
+	BuyProduct(c, 10000)
 	ValidateUsers(id, true)
-	SendComment(10000)
+	SendComment(c, 10000)
 	ValidateIndex(0, true)
 }
 
 func ValidateIndex(page int, loggedIn bool) {
 	var flg, flg1, flg2, flg3 bool
-	doc, _ := goquery.NewDocument(host + "/?page=" + strconv.Itoa(page))
+	doc, err := goquery.NewDocument(host + "/?page=" + strconv.Itoa(page))
+	if err != nil {
+		ShowLog("Cannot GET /index")
+		os.Exit(1)
+	}
 
 	// 商品が50個あることの確認
 	flg = doc.Find(".row").Children().Size() == 50
@@ -122,8 +129,11 @@ func ValidateIndex(page int, loggedIn bool) {
 
 func ValidateProducts(loggedIn bool) {
 	var flg bool
-	doc, _ := goquery.NewDocument(host + "/products/1500")
-
+	doc, err := goquery.NewDocument(host + "/products/1500")
+	if err != nil {
+		ShowLog("Cannot GET /products/:id")
+		os.Exit(1)
+	}
 	// 画像パスの確認
 	doc.Find("img").EachWithBreak(func(i int, s *goquery.Selection) bool {
 		src, _ := s.Attr("src")
@@ -154,7 +164,11 @@ func ValidateProducts(loggedIn bool) {
 
 func ValidateUsers(id int, loggedIn bool) {
 	var flg bool
-	doc, _ := goquery.NewDocument(host + "/users/" + strconv.Itoa(id))
+	doc, err := goquery.NewDocument(host + "/users/" + strconv.Itoa(id))
+	if err != nil {
+		ShowLog("Cannot GET /users/:id")
+		os.Exit(1)
+	}
 
 	// 履歴が30個あることの確認
 	flg = doc.Find(".row").Children().Size() == 30
@@ -219,47 +233,47 @@ func GetTotalPay(user_id int) string {
 }
 
 // 基本アクセス
-func GetIndex(page int) int {
-	return HttpRequest("GET", "/?page="+strconv.Itoa(page), nil)
+func GetIndex(c []*http.Cookie, page int) (int, []*http.Cookie) {
+	return HttpRequest("GET", "/?page="+strconv.Itoa(page), nil, c)
 }
 
-func GetImage(id int) int {
-	return HttpRequest("GET", "/images/image"+strconv.Itoa(id)+".jpg", nil)
+func GetImage(c []*http.Cookie, id int) (int, []*http.Cookie) {
+	return HttpRequest("GET", "/images/image"+strconv.Itoa(id)+".jpg", nil, c)
 }
 
-func GetProduct(id int) int {
+func GetProduct(c []*http.Cookie, id int) (int, []*http.Cookie) {
 	if id == 0 {
 		id = GetRand(1, 10000)
 	}
-	return HttpRequest("GET", "/products/"+strconv.Itoa(id), nil)
+	return HttpRequest("GET", "/products/"+strconv.Itoa(id), nil, c)
 }
 
-func PostLogin(email string, password string) int {
+func PostLogin(c []*http.Cookie, email string, password string) (int, []*http.Cookie) {
 	v := url.Values{}
 	v.Add("email", email)
 	v.Add("password", password)
-	return HttpRequest("POST", "/login", v)
+	return HttpRequest("POST", "/login", v, c)
 }
 
-func GetLogout() int {
-	return HttpRequest("GET", "/logout", nil)
+func GetLogout(c []*http.Cookie) (int, []*http.Cookie) {
+	return HttpRequest("GET", "/logout", nil, c)
 }
 
-func BuyProduct(productId int) int {
+func BuyProduct(c []*http.Cookie, productId int) (int, []*http.Cookie) {
 	if productId == 0 {
 		productId = GetRand(1, 10000)
 	}
-	return HttpRequest("POST", "/products/buy/"+strconv.Itoa(productId), nil)
+	return HttpRequest("POST", "/products/buy/"+strconv.Itoa(productId), nil, c)
 }
 
-func SendComment(productId int) int {
+func SendComment(c []*http.Cookie, productId int) (int, []*http.Cookie) {
 	if productId == 0 {
 		productId = GetRand(1, 10000)
 	}
 	v := url.Values{}
-	c := []string{"爆買いしてよかった。", "二度と買わない。", "友達にも勧めます。"}
-	v.Add("content", strings.Repeat("この商品は"+choice(c), 5))
-	return HttpRequest("POST", "/comments/"+strconv.Itoa(productId), v)
+	opt := []string{"爆買いしてよかった。", "二度と買わない。", "友達にも勧めます。"}
+	v.Add("content", strings.Repeat("この商品は"+choice(opt), 5))
+	return HttpRequest("POST", "/comments/"+strconv.Itoa(productId), v, c)
 }
 
 func choice(s []string) string {
@@ -292,27 +306,64 @@ func GetRand(from int, to int) int {
 	return rand.Intn(to+1-from) + from
 }
 
-func LoopAccess() int {
-	s := 0
+func SendRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+	score := 0
+	resp := 200
+	var c []*http.Cookie
+
 	// ログイン状態
 	_, email, password := GetUserInfo()
-	s = CalcScore(s, PostLogin(email, password))
-	s = CalcScore(s, GetIndex(0))
-	s = CalcScore(s, GetProduct(0))
-	s = CalcScore(s, SendComment(0))
+	resp, c = PostLogin(c, email, password)
+	score = CalcScore(score, resp)
+
+	resp, c = GetIndex(c, 0)
+	score = CalcScore(score, resp)
+
+	resp, c = GetProduct(c, 0)
+	score = CalcScore(score, resp)
+
+	resp, c = SendComment(c, 0)
+	score = CalcScore(score, resp)
+
+	UpdateScore(score, wg, m, finishTime)
+	score = 0
+
 	for i := 0; i < 10; i++ {
-		s = CalcScore(s, GetImage(0))
-		s = CalcScore(s, GetImage(1))
-		s = CalcScore(s, GetImage(2))
-		s = CalcScore(s, GetImage(3))
-		s = CalcScore(s, GetImage(4))
-		s = CalcScore(s, BuyProduct(0))
+		for j := 0; j < 5; j++ {
+			resp, c = GetImage(c, j)
+			score = CalcScore(score, resp)
+		}
+		resp, c = BuyProduct(c, 0)
+		score = CalcScore(score, resp)
 	}
+
+	UpdateScore(score, wg, m, finishTime)
+	score = 0
+
 	//ログアウト状態
-	s = CalcScore(s, GetLogout())
-	s = CalcScore(s, GetIndex(GetRand(150, 199)))
-	s = CalcScore(s, GetProduct(0))
-	return s
+	resp, c = GetLogout(c)
+	score = CalcScore(score, resp)
+
+	resp, c = GetIndex(c, GetRand(150, 199))
+	score = CalcScore(score, resp)
+
+	resp, c = GetProduct(c, 0)
+	score = CalcScore(score, resp)
+
+	UpdateScore(score, wg, m, finishTime)
+}
+
+func UpdateScore(score int, wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+	m.Lock()
+	defer m.Unlock()
+	TotalScore = TotalScore + score
+	if time.Now().After(finishTime) {
+		wg.Done()
+		if Finished == false {
+			Finished = true
+			ShowScore()
+		}
+	}
 }
 
 func CalcScore(score int, response int) int {
@@ -325,7 +376,7 @@ func CalcScore(score int, response int) int {
 	}
 }
 
-func HttpRequest(method string, path string, params url.Values) int {
+func HttpRequest(method string, path string, params url.Values, cookies []*http.Cookie) (int, []*http.Cookie) {
 	req, _ := http.NewRequest(method, host+path, strings.NewReader(params.Encode()))
 	jar, _ := cookiejar.New(nil)
 	CookieURL, _ := url.Parse(host + path)
@@ -334,28 +385,37 @@ func HttpRequest(method string, path string, params url.Values) int {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return 500
+		return 500, cookies
 	}
 	defer resp.Body.Close()
 
-	cookies = jar.Cookies(CookieURL)
-	return resp.StatusCode
+	return resp.StatusCode, jar.Cookies(CookieURL)
 }
 
-func StartBenchmark() {
+func LoopRequests(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+	for {
+		SendRequests(wg, m, finishTime)
+	}
+}
+
+func StartBenchmark(workload int) {
 	GetInitialize()
-	ShowLog("Benchmark Start!")
+	ShowLog("Benchmark Start!  Workload: " + strconv.Itoa(workload))
 	finishTime := time.Now().Add(1 * time.Minute)
 	ValidateInitialize()
-	score := 9
-	for {
-		if time.Now().After(finishTime) {
-			break
-		}
-		score = score + LoopAccess()
+	wg := new(sync.WaitGroup)
+	m := new(sync.Mutex)
+	for i := 0; i < workload; i++ {
+		wg.Add(1)
+		go LoopRequests(wg, m, finishTime)
 	}
+	wg.Wait()
+}
+
+func ShowScore() {
 	ShowLog("Benchmark Finish!")
-	ShowLog("Score: " + strconv.Itoa(score))
+	ShowLog("Score: " + strconv.Itoa(TotalScore))
+	ShowLog("Waiting for Stopping All Benchmarkers ...")
 }
 
 func ShowLog(str string) {
@@ -364,8 +424,20 @@ func ShowLog(str string) {
 
 const host = "http://localhost:8080"
 
-var cookies []*http.Cookie
+var TotalScore = 9
+var Finished = false
 
 func main() {
-	StartBenchmark()
+	flag.Usage = func() {
+		fmt.Println(`Usage: ./benchmark [option]
+Options:
+  -workload n	run benchmark with n workloads`)
+	}
+
+	var (
+		workload = flag.Int("workload", 1, "run benchmark with n workloads")
+	)
+	flag.Parse()
+
+	StartBenchmark(*workload)
 }
