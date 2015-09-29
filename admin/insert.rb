@@ -26,9 +26,13 @@ def db
   client
 end
 
+def time_now
+  Time.now.strftime("%Y-%m-%d %H:%M:%S")
+end
+
 def insert_user
   o = [('a'..'z'), ('A'..'Z'), ('0'..'9')].map { |i| i.to_a }.flatten
-  db.query("INSERT INTO users (name, email, password, last_login) VALUES ('ishocon', 'ishocon@isho.con', 'ishoconpass', '#{Time.now}')")
+  db.query("INSERT INTO users (name, email, password, last_login) VALUES ('ishocon', 'ishocon@isho.con', 'ishoconpass', '#{time_now}')")
   query = ''
   4999.times do |i|
     if i%100 == 0
@@ -38,7 +42,7 @@ def insert_user
     name = %w(さとう すずき たかはし たなか わたなべ いとう やまもと).sample + "#{i}号"
     email = "ishocon#{i}@isho.con"
     pass = (0...16).map { o[rand(o.length)] }.join
-    last_login = Time.now
+    last_login = time_now
     query << "('#{name}', '#{email}', '#{pass}', '#{last_login}'), "
   end
   db.query(query[0..-3])
@@ -55,7 +59,7 @@ def insert_products
     description = "これはかなり#{name}です。取り扱いには十分ご注意ください\n" * 25
     image_path = '/images/image' + (i % 5).to_s + '.jpg'
     price = rand(500) * 10
-    created_at = Time.now
+    created_at = time_now
     query << "('#{name}', '#{description}', '#{image_path}', #{price}, '#{created_at}'), "
   end
   db.query(query[0..-3])
@@ -80,7 +84,7 @@ def insert_comments
         日本製の製品はさすがに質が高いですね。
         嬉しくて夜も眠れません。
       ).sample(3).join
-      created_at = Time.now
+      created_at = time_now
       query << "(#{product_id}, #{user_id}, '#{content}', '#{created_at}'), "
     end
     db.query(query[0..-3])
@@ -95,7 +99,7 @@ def insert_histories
       query = 'INSERT INTO histories (product_id, user_id, created_at) VALUES ' if j == 0
       product_id = rand(10000)
       user_id = i + 1
-      created_at = Time.now
+      created_at = time_now
       query << "(#{product_id}, #{user_id}, '#{created_at}'), "
     end
     db.query(query[0..-3])

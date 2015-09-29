@@ -1,7 +1,7 @@
-DROP TABLE users;
-DROP TABLE products;
-DROP TABLE comments;
-DROP TABLE histories;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS histories;
 
 CREATE TABLE `users` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
