@@ -1,12 +1,14 @@
 <div class="jumbotron">
   <div class="container">
-    <h2><%= user[:name] %> さんの購入履歴　合計金額: <%= total_pay %>円</h2>
+    <h2><%= user[:name] %> さんの購入履歴</h2>
+    <h4>合計金額: <%= total_pay %>円</h4>
   </div>
 </div>
 <div class="container">
 <!-- Example row of columns -->
 <div class="row">
-  <% products.each do |product| %>
+  <% products.each_with_index do |product, index| %>
+    <% break if index >= 30 %>
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">

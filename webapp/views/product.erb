@@ -1,6 +1,7 @@
 <div class="jumbotron">
   <div class="container">
-    <h2><%= product[:name] %>　<% if already_bought(product[:id]) %>あなたはすでにこの商品を買っています<% end %></h2>
+    <h2><%= product[:name] %></h2>
+    <% if already_bought(product[:id]) %><h4>あなたはすでにこの商品を買っています</h4><% end %>
   </div>
 </div>
 <div class="container">

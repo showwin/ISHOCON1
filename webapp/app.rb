@@ -9,10 +9,10 @@ module Ishocon1
 end
 
 class Ishocon1::WebApp < Sinatra::Base
-  use Rack::Session::Cookie
+  session_secret = ENV['ISHOCON1_SESSION_SECRET'] || 'showwin_happy'
+  use Rack::Session::Cookie, key: 'rack.session', secret: session_secret
   set :erb, escape_html: true
   set :public_folder, File.expand_path('../public', __FILE__)
-  set :session_secret, ENV['ISHOCON1_SESSION_SECRET'] || 'showwin_happy'
   set :protection, true
 
   helpers do
@@ -45,12 +45,12 @@ class Ishocon1::WebApp < Sinatra::Base
 
     def authenticate(email, password)
       user = db.xquery('SELECT * FROM users WHERE email = ?', email).first
-      raise Ishocon1::AuthenticationError unless user[:password] == password
+      fail Ishocon1::AuthenticationError unless user[:password] == password
       session[:user_id] = user[:id]
     end
 
     def authenticated!
-      raise Ishocon1::PermissionDenied unless current_user
+      fail Ishocon1::PermissionDenied unless current_user
     end
 
     def current_user
@@ -81,11 +81,11 @@ class Ishocon1::WebApp < Sinatra::Base
 
   error Ishocon1::AuthenticationError do
     session[:user_id] = nil
-    halt 401, erubis(:login, layout: false, locals: { message: 'ログインに失敗しました' })
+    halt 401, erb(:login, layout: false, locals: { message: 'ログインに失敗しました' })
   end
 
   error Ishocon1::PermissionDenied do
-    halt 403, erubis(:login, layout: false, locals: { message: '先にログインをしてください' })
+    halt 403, erb(:login, layout: false, locals: { message: '先にログインをしてください' })
   end
 
   get '/login' do
@@ -113,7 +113,7 @@ class Ishocon1::WebApp < Sinatra::Base
 
   get '/users/:user_id' do
     products_query = <<SQL
-SELECT *
+SELECT p.id, p.name, p.description, p.image_path, p.price, h.created_at
 FROM histories as h
 LEFT OUTER JOIN products as p
 ON h.product_id = p.id
@@ -154,5 +154,6 @@ SQL
     db.query('DELETE FROM products WHERE id > 10000')
     db.query('DELETE FROM comments WHERE id > 200000')
     db.query('DELETE FROM histories WHERE id > 500000')
+    "Finish"
   end
 end
