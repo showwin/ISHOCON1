@@ -78,14 +78,14 @@ func ValidateIndex(page int, loggedIn bool) {
 		if i == 2 {
 			str := s.Text()
 			if loggedIn {
-				flg1 = str == "レビュー(21件)"
+				flg1 = str == "21件のレビュー"
 			} else {
-				flg1 = str == "レビュー(20件)"
+				flg1 = str == "20件のレビュー"
 			}
 		}
 		if i == 11 {
 			str := s.Text()
-			flg2 = str == "レビュー(20件)"
+			flg2 = str == "20件のレビュー"
 			return false
 		}
 		return true
@@ -94,9 +94,8 @@ func ValidateIndex(page int, loggedIn bool) {
 
 	// 商品のDOMの確認
 	flg1 = doc.Find(".panel-default").First().Children().Size() == 2
-	flg2 = doc.Find(".panel-body").First().Children().Size() == 7
-	flg3 = doc.Find(".col-md-4").First().Find(".panel-body ul").Children().Size() == 5
-	flg = flg && flg1 && flg2 && flg3
+	flg2 = doc.Find(".panel-body").First().Children().Size() == 6
+	flg = flg && flg1 && flg2
 
 	// イメージパスの確認
 	doc.Find("img").EachWithBreak(func(i int, s *goquery.Selection) bool {
@@ -110,15 +109,6 @@ func ValidateIndex(page int, loggedIn bool) {
 		}
 		return true
 	})
-
-	// コメントの反映確認
-	if loggedIn {
-		doc.Find(".panel-body ul li").EachWithBreak(func(_ int, s *goquery.Selection) bool {
-			str := s.Text()
-			flg = strings.Contains(str, "この商品") && flg
-			return false
-		})
-	}
 
 	// 全体の確認
 	if flg == false {

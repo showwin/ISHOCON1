@@ -21,8 +21,8 @@ class Ishocon1::WebApp < Sinatra::Base
         db: {
           host: ENV['ISHOCON1_DB_HOST'] || 'localhost',
           port: ENV['ISHOCON1_DB_PORT'] && ENV['ISHOCON1_DB_PORT'].to_i,
-          username: ENV['ISHOCON1_DB_USER'] || 'root',
-          password: ENV['ISHOCON1_DB_PASSWORD'],
+          username: ENV['ISHOCON1_DB_USER'] || 'ishocon',
+          password: ENV['ISHOCON1_DB_PASSWORD'] || 'ishocon',
           database: ENV['ISHOCON1_DB_NAME'] || 'ishocon1'
         }
       }

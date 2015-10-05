@@ -20,13 +20,7 @@
           <p><%= product[:description][1..70] %>…</p>
           <% comments = db.xquery('SELECT * FROM comments WHERE product_id = ? ORDER BY created_at DESC LIMIT 5', product[:id]) %>
           <% comments_count = db.xquery('SELECT count(*) as count FROM comments WHERE product_id = ?', product[:id]).first[:count] %>
-          <h4>レビュー(<%= comments_count %>件)</h4>
-          <ul>
-            <% comments.each do |comment| %>
-              <% user = db.xquery('SELECT * FROM users WHERE id = ?', comment[:user_id]).first %>
-              <li><%= comment[:content].size > 25 ? "#{comment[:content][0..25]}…" : comment[:content] %> by <%= user[:name] %></li>
-            <% end %>
-          </ul>
+          <h4><%= comments_count %>件のレビュー</h4>
         </div>
         <% if current_user %>
           <div class="panel-footer">
