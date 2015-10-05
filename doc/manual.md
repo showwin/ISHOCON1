@@ -4,7 +4,7 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-26dd4626
+* AMI: ami-8ae07b8a
 * Instance Type: c3.xlarge
 * EBS Optimization: なし
 * Root Volume: 8GB, Magnetic
@@ -25,12 +25,12 @@ AWSのイメージのみ作成しました。
 ### インスタンスにログインする
 例:
 ```
-$ ssh -i ~/.ssh/your_private_key.pem root@xx.xx.xx.xx
+$ ssh -i ~/.ssh/your_private_key.pem ec2-user@xx.xx.xx.xx
 ```
 
 ### ishocon ユーザに切り替える
 ```
-$ su - ishocon
+$ sudo su - ishocon
 ```
 
 ### Unicorn を立ち上げる
@@ -59,7 +59,7 @@ $ cd ~/
 $ ./benchmark --workload 3
 ```
 * ベンチマーカーは並列実行可能で、負荷量を指定することができます。
-* 初期実装では1で十分でしょう。(初期実装で80点前後になると思います。)
+* 初期実装では1で十分でしょう。(初期実装で150点前後になると思います。)
 * 何も指定しない場合は1で実行されます。
 * 並列度が高い場合は1分以上経っても終了しない場合がありますが、スコアには影響ありません。
 

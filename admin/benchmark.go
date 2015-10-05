@@ -412,7 +412,7 @@ func ShowLog(str string) {
 	fmt.Println(time.Now().Format("15:04:05") + "  " + str)
 }
 
-const host = "http://localhost:8080"
+const host = "http://127.0.0.1"
 
 var TotalScore = 9
 var Finished = false
