@@ -13,13 +13,13 @@ AWSのイメージのみ作成しました。
 
 参考画像  
 * 8GB, Magnetic を選択してください。
-![](./doc/images/instance1.png)
+![](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/instance1.png)
 
-* 最後に以下のように聞かれることがありますが、Magnetic を選択してください。
-![](./doc/images/instance2.png)
+* 途中で以下のように聞かれることがありますが、Magnetic を選択してください。
+![](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/instance2.png)
 
 * Security Groupの設定で `TCP 22 (SSH)` と `TCP 80 (HTTP)` を `Inbound 0.0.0.0/0` からアクセスできるようにしてください。
-![](./doc/images/instance3.png)
+![](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/instance3.png)
 
 ## アプリケーションの起動
 ### インスタンスにログインする
@@ -41,13 +41,15 @@ $ unicorn -c unicorn_config.rb
 これでブラウザからアプリケーションが見れるようになるので、IPアドレスにアクセスしてみましょう。  
 ※ `/`(トップページ) が重たいのでブラウザによっては画像が全部読み込まれないかもしれません。
 
-![](./doc/images/top.png)
+**トップページ**
+![トップページ](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/top.png)
 
 `/login` からログインが可能です。
 * email: ishocon@isho.con
 * password: ishoconpass
 
-![](./doc/images/login.png)
+**ログイン画面**
+![ログイン画面](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/login.png)
 
 
 ## ベンチマーク
