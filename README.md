@@ -10,7 +10,7 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
 
 ## 問題詳細
 * マニュアル: [ISHOCON1マニュアル]()
-* AMI: `ami-8ae07b8a`
+* AMI: `ami-1445de14`
 * インスタンスタイプ: `c3.xlarge`
 * 参考実装言語: Rubyのみ
 
@@ -19,5 +19,5 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
 
 |名前|スコア|ソースコードのレポジトリ or AMI|備考|
 |:--:|:--:|:--:|:--:|
-|[showwin](https://twitter.com/showwin)|33647||問題初挑戦2時間でこのスコアでした。(問題理解の時間は含みません)|
+|[showwin](https://twitter.com/showwin)|42542|[showwin/ISHOCON1_me](https://github.com/showwin/ISHOCON1_me)|問題初挑戦2時間でこのスコアでした。(問題理解の時間は含みません)|
 |初期状態|214|-|初期実装のworkloadが1で214点になりました。|
