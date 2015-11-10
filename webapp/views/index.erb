@@ -4,34 +4,39 @@
   </div>
 </div>
 <div class="container">
-<!-- Example row of columns -->
-<div class="row">
-  <% products.each do |product| %>
-    <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <a href="/products/<%= product[:id] %>"><%= product[:name] %></a>
-        </div>
-        <div class="panel-body">
-          <a href="/products/<%= product[:id] %>"><img src="<%= product[:image_path] %>" class="img-responsive" /></a>
-          <h4>価格</h4>
-          <p><%= product[:price] %>円</p>
-          <h4>商品説明</h4>
-          <p><%= product[:description][1..70] %>…</p>
-          <% comments = db.xquery('SELECT * FROM comments WHERE product_id = ? ORDER BY created_at DESC LIMIT 5', product[:id]) %>
-          <% comments_count = db.xquery('SELECT count(*) as count FROM comments WHERE product_id = ?', product[:id]).first[:count] %>
-          <h4><%= comments_count %>件のレビュー</h4>
-        </div>
-        <% if current_user %>
-          <div class="panel-footer">
-            <form method="POST" action="/products/buy/<%= product[:id] %>">
-              <fieldset>
-                <input class="btn btn-success btn-block" type="submit" name="buy" value="購入" />
-              </fieldset>
-            </form>
+  <div class="row">
+    <% products.each do |product| %>
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a href="/products/<%= product[:id] %>"><%= product[:name] %></a>
           </div>
-        <% end %>
+          <div class="panel-body">
+            <a href="/products/<%= product[:id] %>"><img src="<%= product[:image_path] %>" class="img-responsive" /></a>
+            <h4>価格</h4>
+            <p><%= product[:price] %>円</p>
+            <h4>商品説明</h4>
+            <p><%= product[:description][1..70] %>…</p>
+            <% comments = db.xquery(cmt_query, product[:id]) %>
+            <% comments_count = db.xquery(cmt_count_query, product[:id]).first[:count] %>
+            <h4><%= comments_count %>件のレビュー</h4>
+            <ul>
+              <% comments.each do |comment| %>
+                <li><%= comment[:content].size > 25 ? "#{comment[:content][0..25]}…" : comment[:content] %> by <%= comment[:name] %></li>
+              <% end %>
+            </ul>
+          </div>
+          <% if current_user %>
+            <div class="panel-footer">
+              <form method="POST" action="/products/buy/<%= product[:id] %>">
+                <fieldset>
+                  <input class="btn btn-success btn-block" type="submit" name="buy" value="購入" />
+                </fieldset>
+              </form>
+            </div>
+          <% end %>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>

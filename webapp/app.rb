@@ -66,7 +66,7 @@ class Ishocon1::WebApp < Sinatra::Base
         product_id, user_id, Time.now)
     end
 
-    def already_bought(product_id)
+    def already_bought?(product_id)
       return false unless current_user
       count = db.xquery('SELECT count(*) as count FROM histories WHERE product_id = ? AND user_id = ?', \
                         product_id, current_user[:id]).first[:count]
@@ -94,7 +94,7 @@ class Ishocon1::WebApp < Sinatra::Base
   end
 
   post '/login' do
-    authenticate params['email'], params['password']
+    authenticate(params['email'], params['password'])
     update_last_login(current_user[:id])
     redirect '/'
   end
@@ -108,7 +108,18 @@ class Ishocon1::WebApp < Sinatra::Base
   get '/' do
     page = params[:page].to_i || 0
     products = db.xquery("SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET #{page * 50}")
-    erb :index, locals: { products: products }
+    cmt_query = <<SQL
+SELECT *
+FROM comments as c
+INNER JOIN users as u
+ON c.user_id = u.id
+WHERE c.product_id = ?
+ORDER BY c.created_at DESC
+LIMIT 5
+SQL
+    cmt_count_query = 'SELECT count(*) as count FROM comments WHERE product_id = ?'
+
+    erb :index, locals: { products: products, cmt_query: cmt_query, cmt_count_query: cmt_count_query }
   end
 
   get '/users/:user_id' do
