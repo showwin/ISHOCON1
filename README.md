@@ -14,10 +14,10 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
 * インスタンスタイプ: `c3.xlarge`
 * 参考実装言語: Rubyのみ
 
-## ランキング
+## ランキング(v0.2)
 ここに載りたい人はどんどんプルリク送ってください！大歓迎です！！
 
 |名前|スコア|ソースコードのレポジトリ or AMI|備考|
 |:--:|:--:|:--:|:--:|
-|[showwin](https://twitter.com/showwin)|42542|[showwin/ISHOCON1_me](https://github.com/showwin/ISHOCON1_me)|問題初挑戦2時間でこのスコアでした。(問題理解の時間は含みません)|
-|初期状態|214|-|初期実装のworkloadが1で214点になりました。|
+|[showwin](https://twitter.com/showwin)|48642|[showwin/ISHOCON1_me](https://github.com/showwin/ISHOCON1_me)|2015/11/11のぼくではこれが限界だ|
+|初期状態|204|-|初期実装のworkloadが3で204点になりました。|
