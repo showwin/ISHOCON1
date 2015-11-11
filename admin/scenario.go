@@ -2,11 +2,10 @@ package main
 
 import (
 	"net/http"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
-  "strings"
-  "strconv"
-  "fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -27,39 +26,39 @@ func JustLookingScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time
 	resp, c = GetIndex(c, 0)
 	score = CalcScore(score, resp)
 
-  for i := 0; i < 50; i++ {
+	for i := 0; i < 50; i++ {
 		resp, c = GetImage(c, i%5)
 		score = CalcScore(score, resp)
 	}
-  UpdateScore(score, wg, m, finishTime)
-  score = 0
+	UpdateScore(score, wg, m, finishTime)
+	score = 0
 
-  resp, c = GetIndex(c, GetRand(50, 99))
+	resp, c = GetIndex(c, GetRand(50, 99))
 	score = CalcScore(score, resp)
 
-  resp, c = GetIndex(c, GetRand(100, 149))
+	resp, c = GetIndex(c, GetRand(100, 149))
 	score = CalcScore(score, resp)
 
-  for i := 0; i < 50; i++ {
+	for i := 0; i < 50; i++ {
 		resp, c = GetImage(c, i%5)
 		score = CalcScore(score, resp)
 	}
-  UpdateScore(score, wg, m, finishTime)
-  score = 0
+	UpdateScore(score, wg, m, finishTime)
+	score = 0
 
-  resp, c = GetIndex(c, GetRand(150, 199))
+	resp, c = GetIndex(c, GetRand(150, 199))
 	score = CalcScore(score, resp)
 
 	resp, c = GetProduct(c, 0)
 	score = CalcScore(score, resp)
 
-  resp, c = GetProduct(c, 0)
+	resp, c = GetProduct(c, 0)
 	score = CalcScore(score, resp)
 
-  resp, c = GetProduct(c, 0)
+	resp, c = GetProduct(c, 0)
 	score = CalcScore(score, resp)
 
-  resp, c = GetLogout(c)
+	resp, c = GetLogout(c)
 	score = CalcScore(score, resp)
 
 	UpdateScore(score, wg, m, finishTime)
@@ -74,20 +73,20 @@ func StalkerScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	resp := 200
 	var c []*http.Cookie
 
-  resp, c = GetIndex(c, 0)
+	resp, c = GetIndex(c, 0)
 	score = CalcScore(score, resp)
 
-  // id:1234 よく商品を買うユーザ
+	// id:1234 よく商品を買うユーザ
 	resp, c = GetUserPage(c, 1234)
 	score = CalcScore(score, resp)
 
-  resp, c = GetUserPage(c, 0)
+	resp, c = GetUserPage(c, 0)
 	score = CalcScore(score, resp)
 
-  resp, c = GetUserPage(c, 0)
+	resp, c = GetUserPage(c, 0)
 	score = CalcScore(score, resp)
 
-  resp, c = GetUserPage(c, 0)
+	resp, c = GetUserPage(c, 0)
 	score = CalcScore(score, resp)
 
 	UpdateScore(score, wg, m, finishTime)
@@ -102,32 +101,32 @@ func BakugaiScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	resp := 200
 	var c []*http.Cookie
 
-  // 1/3 の確率で id:1234 のユーザが爆買いする
-  uId := 0
-  if GetRand(1, 2) == 1 {
-    uId = 1234
-  }
+	// 1/3 の確率で id:1234 のユーザが爆買いする
+	uId := 0
+	if GetRand(1, 2) == 1 {
+		uId = 1234
+	}
 
 	_, email, password := GetUserInfo(uId)
 	resp, c = PostLogin(c, email, password)
 	score = CalcScore(score, resp)
 
-  resp, c = GetIndex(c, GetRand(100, 199))
+	resp, c = GetIndex(c, GetRand(100, 199))
 	score = CalcScore(score, resp)
 
-  for i := 0; i < 20; i++ {
+	for i := 0; i < 20; i++ {
 		resp, c = BuyProduct(c, 0)
 		score = CalcScore(score, resp)
 	}
-  UpdateScore(score, wg, m, finishTime)
-  score = 0
+	UpdateScore(score, wg, m, finishTime)
+	score = 0
 
-  for i := 0; i < 5; i++ {
+	for i := 0; i < 5; i++ {
 		resp, c = SendComment(c, 0)
 		score = CalcScore(score, resp)
 	}
 
-  resp, c = GetLogout(c)
+	resp, c = GetLogout(c)
 	score = CalcScore(score, resp)
 
 	UpdateScore(score, wg, m, finishTime)

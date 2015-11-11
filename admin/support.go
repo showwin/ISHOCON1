@@ -16,7 +16,7 @@ func choice(s []string) string {
 
 // ランダムにユーザー情報を取得
 func GetUserInfo(id int) (int, string, string) {
-  if id == 0 {
+	if id == 0 {
 		id = GetRand(1, 5000)
 	}
 	var email, password string
