@@ -4,7 +4,7 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-1445de14
+* AMI: ami-7c0b2a12
 * Instance Type: c3.xlarge
 * EBS Optimization: なし
 * Root Volume: 8GB, Magnetic
