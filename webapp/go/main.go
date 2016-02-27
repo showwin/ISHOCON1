@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/contrib/static"
@@ -15,7 +16,6 @@ import (
 func main() {
 	r := gin.Default()
 	// load templates
-	r.LoadHTMLGlob("templates/*")
 	r.Use(static.Serve("/", static.LocalFile("public", true)))
 	layout := "templates/layout.tmpl"
 
@@ -24,6 +24,8 @@ func main() {
 	r.Use(sessions.Sessions("mysession", store))
 
 	r.GET("/login", func(c *gin.Context) {
+		tmpl, _ := template.ParseFiles("templates/login.tmpl")
+		r.SetHTMLTemplate(tmpl)
 		c.HTML(http.StatusOK, "login", gin.H{
 			"Message": "ECサイトで爆買いしよう！！！！",
 		})
@@ -43,9 +45,27 @@ func main() {
 			// ログイン失敗
 		}
 
-		r.SetHTMLTemplate(template.Must(template.ParseFiles(layout, "templates/index.tmpl")))
+		tmpl := template.Must(template.ParseFiles(layout))
+		tmpl.ParseFiles("templates/index.tmpl")
+		r.SetHTMLTemplate(tmpl)
 		c.HTML(http.StatusOK, "base", gin.H{
 			"title": "Main website",
+		})
+	})
+
+	r.GET("/products/:productId", func(c *gin.Context) {
+		pid, _ := strconv.Atoi(c.Param("productId"))
+		product := getProduct(pid)
+		comments := getComments(pid)
+
+		cUser := currentUser(sessions.Default(c))
+		bought := product.isBought(cUser.ID)
+
+		r.SetHTMLTemplate(template.Must(template.ParseFiles(layout, "templates/product.tmpl")))
+		c.HTML(http.StatusOK, "base", gin.H{
+			"Product":       product,
+			"Comments":      comments,
+			"AlreadyBought": bought,
 		})
 	})
 
@@ -61,15 +81,4 @@ func db() *sql.DB {
 		panic(err.Error())
 	}
 	return db
-}
-
-func getUserPassword(email string) (int, string) {
-	var uid int
-	var pass string
-	err := db().QueryRow("SELECT id, password FROM users WHERE email = ? LIMIT 1", email).Scan(&uid, &pass)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return uid, pass
 }
