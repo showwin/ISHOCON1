@@ -14,10 +14,10 @@
       <a class="navbar-brand" href="/">すごいECサイトで爆買いしよう!</a>
     </div>
     <div class="header clearfix">
-    {{ if .CurrentUser }}
+    {{ if gt .CurrentUser.ID 0 }}
       <nav>
         <ul class="nav nav-pills pull-right">
-          <li role="presentation"><a href="/users/{{ "TODO: CurrentUser.id here" }}">{{ "TODO: CurrentUser.name here" }}さんの購入履歴</a></li>
+          <li role="presentation"><a href="/users/{{ "TODO: CurrentUser.id here" }}">{{ .CurrentUser.Name }}さんの購入履歴</a></li>
           <li role="presentation"><a href="/logout">Logout</a></li>
         </ul>
       </nav>

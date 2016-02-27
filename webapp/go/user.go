@@ -28,7 +28,7 @@ func currentUser(session sessions.Session) User {
 	r := db().QueryRow("SELECT * FROM users WHERE id = ? LIMIT 1", id)
 	err := r.Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.LastLogin)
 	if err != nil {
-		panic(err.Error())
+		return u
 	}
 
 	return u

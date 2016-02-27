@@ -24,6 +24,10 @@ func main() {
 	r.Use(sessions.Sessions("mysession", store))
 
 	r.GET("/login", func(c *gin.Context) {
+		session := sessions.Default(c)
+		session.Clear()
+		session.Save()
+
 		tmpl, _ := template.ParseFiles("templates/login.tmpl")
 		r.SetHTMLTemplate(tmpl)
 		c.HTML(http.StatusOK, "login", gin.H{
@@ -53,6 +57,16 @@ func main() {
 		})
 	})
 
+	r.GET("/logout", func(c *gin.Context) {
+		session := sessions.Default(c)
+		session.Clear()
+		session.Save()
+
+		tmpl, _ := template.ParseFiles("templates/login.tmpl")
+		r.SetHTMLTemplate(tmpl)
+		c.Redirect(http.StatusFound, "/login")
+	})
+
 	r.GET("/products/:productId", func(c *gin.Context) {
 		pid, _ := strconv.Atoi(c.Param("productId"))
 		product := getProduct(pid)
@@ -63,6 +77,7 @@ func main() {
 
 		r.SetHTMLTemplate(template.Must(template.ParseFiles(layout, "templates/product.tmpl")))
 		c.HTML(http.StatusOK, "base", gin.H{
+			"CurrentUser":   cUser,
 			"Product":       product,
 			"Comments":      comments,
 			"AlreadyBought": bought,
