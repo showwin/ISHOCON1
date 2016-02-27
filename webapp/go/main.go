@@ -20,7 +20,7 @@ func main() {
 	layout := "templates/layout.tmpl"
 
 	// session store
-	store := sessions.NewCookieStore([]byte("secret"))
+	store := sessions.NewCookieStore([]byte("showwin_happy"))
 	r.Use(sessions.Sessions("mysession", store))
 
 	r.GET("/login", func(c *gin.Context) {
@@ -40,21 +40,27 @@ func main() {
 		pass := c.PostForm("password")
 
 		session := sessions.Default(c)
-		uid, uPass := getUserPassword(email)
-		if pass == uPass {
+		uid, result := authenticate(email, pass)
+		if result {
 			// ログイン成功
 			session.Set("uid", uid)
 			session.Save()
+
+			// TODO: redirect to /
+			tmpl := template.Must(template.ParseFiles(layout))
+			tmpl.ParseFiles("templates/index.tmpl")
+			r.SetHTMLTemplate(tmpl)
+			c.HTML(http.StatusOK, "base", gin.H{
+				"title": "Main website",
+			})
 		} else {
 			// ログイン失敗
+			tmpl, _ := template.ParseFiles("templates/login.tmpl")
+			r.SetHTMLTemplate(tmpl)
+			c.HTML(http.StatusOK, "login", gin.H{
+				"Message": "ログインに失敗しました",
+			})
 		}
-
-		tmpl := template.Must(template.ParseFiles(layout))
-		tmpl.ParseFiles("templates/index.tmpl")
-		r.SetHTMLTemplate(tmpl)
-		c.HTML(http.StatusOK, "base", gin.H{
-			"title": "Main website",
-		})
 	})
 
 	r.GET("/logout", func(c *gin.Context) {
@@ -65,6 +71,39 @@ func main() {
 		tmpl, _ := template.ParseFiles("templates/login.tmpl")
 		r.SetHTMLTemplate(tmpl)
 		c.Redirect(http.StatusFound, "/login")
+	})
+
+	r.GET("/", func(c *gin.Context) {
+
+	})
+
+	r.GET("/users/:userId", func(c *gin.Context) {
+		cUser := currentUser(sessions.Default(c))
+
+		uid, _ := strconv.Atoi(c.Param("userId"))
+		user := getUser(uid)
+
+		products := user.BuyingHistory()
+
+		var totalPay int
+		for _, p := range products {
+			totalPay += p.Price
+		}
+
+		// shorten description
+		var sdProducts []Product
+		for _, p := range products {
+			p.Description = string([]rune(p.Description)[:70])
+			sdProducts = append(sdProducts, p)
+		}
+
+		r.SetHTMLTemplate(template.Must(template.ParseFiles(layout, "templates/mypage.tmpl")))
+		c.HTML(http.StatusOK, "base", gin.H{
+			"CurrentUser": cUser,
+			"User":        user,
+			"Products":    sdProducts,
+			"TotalPay":    totalPay,
+		})
 	})
 
 	r.GET("/products/:productId", func(c *gin.Context) {
@@ -82,6 +121,19 @@ func main() {
 			"Comments":      comments,
 			"AlreadyBought": bought,
 		})
+	})
+
+	r.POST("/products/buy/:productId", func(c *gin.Context) {
+		// need authenticated
+
+	})
+
+	r.POST("/comments/:product_id", func(c *gin.Context) {
+		// need authenticated
+	})
+
+	r.GET("/initialize", func(c *gin.Context) {
+
 	})
 
 	r.Run(":8080")

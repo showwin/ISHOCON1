@@ -1,0 +1,45 @@
+{{ define "content" }}
+<div class="jumbotron">
+  <div class="container">
+    <h2>{{ .User.Name }} さんの購入履歴</h2>
+    <h4>合計金額: {{ .TotalPay }}円</h4>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    {{ $owner := eq .User.ID .CurrentUser.ID }}
+    {{ range $index, $product := .Products }}
+      {{ if ge $index 30 }}{{ else }}
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a href="/products/<%= product[:id] %>">{{ $product.Name }}</a>
+          </div>
+          <div class="panel-body">
+            <a href="/products/{{ $product.ID }}"><img src="{{ $product.ImagePath }}" class="img-responsive" /></a>
+            <h4>価格</h4>
+            <p>{{ $product.Price }}円</p>
+            <h4>商品説明</h4>
+            <p>{{ $product.Description }}…</p>
+            <h4>購入日時</h4>
+            <p>{{ $product.CreatedAt }}</p>
+          </div>
+          {{ if $owner }}
+            <div class="panel-footer">
+              <form method="POST" action="/comments/{{ $product.ID }}">
+                <fieldset>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="Comment Here" name="content" value="">
+                  </div>
+                  <input class="btn btn-success btn-block" type="submit" name="send_comment" value="コメントを送信" />
+                </fieldset>
+              </form>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+    {{ end }}
+  </div>
+</div>
+{{ end }}

@@ -11,25 +11,58 @@ type User struct {
 	LastLogin string
 }
 
-func getUserPassword(email string) (int, string) {
-	var uid int
-	var pass string
-	err := db().QueryRow("SELECT id, password FROM users WHERE email = ? LIMIT 1", email).Scan(&uid, &pass)
+func authenticate(email string, password string) (uid int, result bool) {
+	var dbPass string
+	err := db().QueryRow("SELECT id, password FROM users WHERE email = ? LIMIT 1", email).Scan(&uid, &dbPass)
 	if err != nil {
-		panic(err.Error())
+		return 0, false
 	}
-
-	return uid, pass
+	result = password == dbPass
+	return
 }
 
-func currentUser(session sessions.Session) User {
-	id := session.Get("uid")
+func getUser(uid int) User {
 	u := User{}
-	r := db().QueryRow("SELECT * FROM users WHERE id = ? LIMIT 1", id)
+	r := db().QueryRow("SELECT * FROM users WHERE id = ? LIMIT 1", uid)
 	err := r.Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.LastLogin)
 	if err != nil {
 		return u
 	}
 
 	return u
+}
+
+func currentUser(session sessions.Session) User {
+	uid := session.Get("uid")
+	u := User{}
+	r := db().QueryRow("SELECT * FROM users WHERE id = ? LIMIT 1", uid)
+	err := r.Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.LastLogin)
+	if err != nil {
+		return u
+	}
+
+	return u
+}
+
+// BuyingHistory : products which user had bought
+func (u *User) BuyingHistory() (products []Product) {
+	rows, err := db().Query(
+		"SELECT p.id, p.name, p.description, p.image_path, p.price, h.created_at "+
+			"FROM histories as h "+
+			"LEFT OUTER JOIN products as p "+
+			"ON h.product_id = p.id "+
+			"WHERE h.user_id = ? "+
+			"ORDER BY h.id DESC", u.ID)
+	if err != nil {
+		return nil
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		p := Product{}
+		err = rows.Scan(&p.ID, &p.Name, &p.Description, &p.ImagePath, &p.Price, &p.CreatedAt)
+		products = append(products, p)
+	}
+
+	return
 }
