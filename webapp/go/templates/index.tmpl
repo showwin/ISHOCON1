@@ -1,0 +1,44 @@
+{{ define "content" }}
+<div class="jumbotron">
+  <div class="container">
+    <h1>今日は大安売りの日です！</h1>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    {{ range .Products }}
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a href="/products/{{ "TODO: id here" }}">{{ "TODO: name here" }}</a>
+          </div>
+          <div class="panel-body">
+            <a href="/products/{{ "TODO: id here" }}"><img src="{{ "TODO: imagePath here" }}" class="img-responsive" /></a>
+            <h4>価格</h4>
+            <p>{{ "TODO: price here" }}円</p>
+            <h4>商品説明</h4>
+            <p>{{ "TODO: description[0..70] here" }}…</p>
+            {{ "TODO: comments = db.xquery(cmt_query, product[:id])" }}
+            {{ "TODO: comments = comments_count = db.xquery(cmt_count_query, product[:id]).first[:count]" }}
+            <h4>{{ "TODO: comments_count" }}<件のレビュー</h4>
+            <ul>
+              {{ range .Comments }}
+                <li>{{ "TODO: comment[:content].size > 25 ? '#{comment[:content][0..25]}…' : comment[:content]" }} by {{ "TODO: comment[:name]" }}</li>
+              {{ end }}
+            </ul>
+          </div>
+          {{ if .CurrentUser }}
+            <div class="panel-footer">
+              <form method="POST" action="/products/buy/{{ "product[:id]" }}">
+                <fieldset>
+                  <input class="btn btn-success btn-block" type="submit" name="buy" value="購入" />
+                </fieldset>
+              </form>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+    {{ end }}
+  </div>
+</div>
+{{ end }}

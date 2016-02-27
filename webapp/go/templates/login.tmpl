@@ -1,0 +1,39 @@
+{{ define "login" }}
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<title>すごいECサイト</title>
+</head>
+<body class="container">
+  <h1 class="jumbotron"><a href="/">すごいECサイト</a></h1>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        <div class="text-danger" id="logout-message">{{ .Message }}</div>
+        <div class="login-panel panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Sign In</h3>
+          </div>
+          <div class="panel-body">
+            <form method="POST" action="/login">
+              <fieldset>
+                <div class="form-group">
+                  <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                </div>
+                <!-- Change this to a button or input when using this as a form -->
+                <input class="btn btn-lg btn-success btn-block" type="submit" name="Login" value="Login" />
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+{{ end }}
