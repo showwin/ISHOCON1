@@ -37,6 +37,7 @@ func getProduct(pid int) Product {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	return p
 }
 

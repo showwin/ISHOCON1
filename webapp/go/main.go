@@ -25,6 +25,7 @@ func main() {
 	store := sessions.NewCookieStore([]byte("showwin_happy"))
 	r.Use(sessions.Sessions("mysession", store))
 
+	// GET /login
 	r.GET("/login", func(c *gin.Context) {
 		session := sessions.Default(c)
 		session.Clear()
@@ -37,6 +38,7 @@ func main() {
 		})
 	})
 
+	// POST /login
 	r.POST("/login", func(c *gin.Context) {
 		email := c.PostForm("email")
 		pass := c.PostForm("password")
@@ -48,13 +50,9 @@ func main() {
 			session.Set("uid", uid)
 			session.Save()
 
-			// TODO: redirect to /
-			tmpl := template.Must(template.ParseFiles(layout))
-			tmpl.ParseFiles("templates/index.tmpl")
+			tmpl, _ := template.ParseFiles("templates/index.tmpl")
 			r.SetHTMLTemplate(tmpl)
-			c.HTML(http.StatusOK, "base", gin.H{
-				"title": "Main website",
-			})
+			c.Redirect(http.StatusFound, "/")
 		} else {
 			// ログイン失敗
 			tmpl, _ := template.ParseFiles("templates/login.tmpl")
@@ -65,6 +63,7 @@ func main() {
 		}
 	})
 
+	// GET /logout
 	r.GET("/logout", func(c *gin.Context) {
 		session := sessions.Default(c)
 		session.Clear()
@@ -75,10 +74,11 @@ func main() {
 		c.Redirect(http.StatusFound, "/login")
 	})
 
+	// GET /
 	r.GET("/", func(c *gin.Context) {
 		cUser := currentUser(sessions.Default(c))
 
-		page, err := strconv.Atoi(c.Param("page"))
+		page, err := strconv.Atoi(c.Query("page"))
 		if err != nil {
 			page = 0
 		}
@@ -108,6 +108,7 @@ func main() {
 		})
 	})
 
+	// GET /users/:userId
 	r.GET("/users/:userId", func(c *gin.Context) {
 		cUser := currentUser(sessions.Default(c))
 
@@ -139,6 +140,7 @@ func main() {
 		})
 	})
 
+	// GET /products/:productId
 	r.GET("/products/:productId", func(c *gin.Context) {
 		pid, _ := strconv.Atoi(c.Param("productId"))
 		product := getProduct(pid)
@@ -156,17 +158,56 @@ func main() {
 		})
 	})
 
+	// POST /products/buy/:productId
 	r.POST("/products/buy/:productId", func(c *gin.Context) {
 		// need authenticated
+		if notAuthenticated(sessions.Default(c)) {
+			tmpl, _ := template.ParseFiles("templates/login.tmpl")
+			r.SetHTMLTemplate(tmpl)
+			c.HTML(http.StatusForbidden, "login", gin.H{
+				"Message": "先にログインをしてください",
+			})
+		} else {
+			// buy product
+			cUser := currentUser(sessions.Default(c))
+			cUser.BuyProduct(c.Param("productId"))
 
+			// redirect to user page
+			tmpl, _ := template.ParseFiles("templates/mypage.tmpl")
+			r.SetHTMLTemplate(tmpl)
+			c.Redirect(http.StatusFound, "/users/"+strconv.Itoa(cUser.ID))
+		}
 	})
 
-	r.POST("/comments/:product_id", func(c *gin.Context) {
+	// POST /comments/:productId
+	r.POST("/comments/:productId", func(c *gin.Context) {
 		// need authenticated
+		if notAuthenticated(sessions.Default(c)) {
+			tmpl, _ := template.ParseFiles("templates/login.tmpl")
+			r.SetHTMLTemplate(tmpl)
+			c.HTML(http.StatusForbidden, "login", gin.H{
+				"Message": "先にログインをしてください",
+			})
+		} else {
+			// create comment
+			cUser := currentUser(sessions.Default(c))
+			cUser.CreateComment(c.Param("productId"), c.PostForm("content"))
+
+			// redirect to user page
+			tmpl, _ := template.ParseFiles("templates/mypage.tmpl")
+			r.SetHTMLTemplate(tmpl)
+			c.Redirect(http.StatusFound, "/users/"+strconv.Itoa(cUser.ID))
+		}
 	})
 
+	// GET /initialize
 	r.GET("/initialize", func(c *gin.Context) {
+		db().Exec("DELETE FROM users WHERE id > 5000")
+		db().Exec("DELETE FROM products WHERE id > 10000")
+		db().Exec("DELETE FROM comments WHERE id > 200000")
+		db().Exec("DELETE FROM histories WHERE id > 500000")
 
+		c.String(http.StatusOK, "Finish")
 	})
 
 	r.Run(":8080")
