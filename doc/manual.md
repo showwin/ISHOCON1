@@ -4,7 +4,7 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-7c0b2a12
+* AMI: ami-dd727fb3
 * Instance Type: c3.xlarge
 * EBS Optimization: なし
 * Root Volume: 8GB, Magnetic
@@ -41,10 +41,18 @@ $ ls
  webapp       #最適化するアプリケーション
 ```
 
-### Unicorn を立ち上げる
+### Web サーバーを立ち上げる
+#### Ruby の場合
 ```
-$ cd ~/webapp/
+$ cd ~/webapp/ruby
 $ unicorn -c unicorn_config.rb
+```
+
+#### Go の場合
+```
+$ cd ~/webapp/go
+$ go build -o webapp *.go
+$ ./webapp
 ```
 これでブラウザからアプリケーションが見れるようになるので、IPアドレスにアクセスしてみましょう。  
 
@@ -66,8 +74,8 @@ $ cd ~/
 $ ./benchmark --workload 3
 ```
 * ベンチマーカーは並列実行可能で、負荷量を指定することができます。
-* 何も指定しない場合は1で実行されます。
-* 初期実装でスコアは200点前後になると思います。(workloadが1の場合)
+* 何も指定しない場合は3で実行されます。
+* 初期実装でスコアは100点前後になると思います。(workloadが3の場合)
 * 並列度が高い場合は1分以上経っても終了しない場合がありますが、スコアには影響ありません。
 
 ## MySQL
