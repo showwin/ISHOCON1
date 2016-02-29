@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/contrib/static"
@@ -16,7 +17,8 @@ import (
 func main() {
 	r := gin.Default()
 	// load templates
-	r.Use(static.Serve("/", static.LocalFile("public", true)))
+	r.Use(static.Serve("/css", static.LocalFile("public/css", true)))
+	r.Use(static.Serve("/images", static.LocalFile("public/images", true)))
 	layout := "templates/layout.tmpl"
 
 	// session store
@@ -74,7 +76,36 @@ func main() {
 	})
 
 	r.GET("/", func(c *gin.Context) {
+		cUser := currentUser(sessions.Default(c))
 
+		page, err := strconv.Atoi(c.Param("page"))
+		if err != nil {
+			page = 0
+		}
+		products := getProductsWithCommentsAt(page)
+		// shorten description and comment
+		var sProducts []ProductWithComments
+		for _, p := range products {
+			if utf8.RuneCountInString(p.Description) > 70 {
+				p.Description = string([]rune(p.Description)[:70]) + "…"
+			}
+
+			var newCW []CommentWriter
+			for _, c := range p.Comments {
+				if utf8.RuneCountInString(c.Content) > 25 {
+					c.Content = string([]rune(c.Content)[:25]) + "…"
+				}
+				newCW = append(newCW, c)
+			}
+			p.Comments = newCW
+			sProducts = append(sProducts, p)
+		}
+
+		r.SetHTMLTemplate(template.Must(template.ParseFiles(layout, "templates/index.tmpl")))
+		c.HTML(http.StatusOK, "base", gin.H{
+			"CurrentUser": cUser,
+			"Products":    sProducts,
+		})
 	})
 
 	r.GET("/users/:userId", func(c *gin.Context) {
@@ -93,7 +124,9 @@ func main() {
 		// shorten description
 		var sdProducts []Product
 		for _, p := range products {
-			p.Description = string([]rune(p.Description)[:70])
+			if utf8.RuneCountInString(p.Description) > 70 {
+				p.Description = string([]rune(p.Description)[:70]) + "…"
+			}
 			sdProducts = append(sdProducts, p)
 		}
 

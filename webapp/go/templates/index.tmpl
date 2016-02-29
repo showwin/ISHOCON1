@@ -6,30 +6,29 @@
 </div>
 <div class="container">
   <div class="row">
-    {{ range .Products }}
+    {{ $loggedIn := gt .CurrentUser.ID 0 }}
+    {{ range $index, $product := .Products }}
       <div class="col-md-4">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <a href="/products/{{ "TODO: id here" }}">{{ "TODO: name here" }}</a>
+            <a href="/products/{{ $product.ID }}">{{ $product.Name }}</a>
           </div>
           <div class="panel-body">
-            <a href="/products/{{ "TODO: id here" }}"><img src="{{ "TODO: imagePath here" }}" class="img-responsive" /></a>
+            <a href="/products/{{ $product.ID }}"><img src="{{ $product.ImagePath }}" class="img-responsive" /></a>
             <h4>価格</h4>
-            <p>{{ "TODO: price here" }}円</p>
+            <p>{{ $product.Price }}円</p>
             <h4>商品説明</h4>
-            <p>{{ "TODO: description[0..70] here" }}…</p>
-            {{ "TODO: comments = db.xquery(cmt_query, product[:id])" }}
-            {{ "TODO: comments = comments_count = db.xquery(cmt_count_query, product[:id]).first[:count]" }}
-            <h4>{{ "TODO: comments_count" }}<件のレビュー</h4>
+            <p>{{ $product.Description }}</p>
+            <h4>{{ $product.CommentCount }}件のレビュー</h4>
             <ul>
-              {{ range .Comments }}
-                <li>{{ "TODO: comment[:content].size > 25 ? '#{comment[:content][0..25]}…' : comment[:content]" }} by {{ "TODO: comment[:name]" }}</li>
+              {{ range $cw := $product.Comments }}
+                <li>{{ $cw.Content }} by {{ $cw.Writer }}</li>
               {{ end }}
             </ul>
           </div>
-          {{ if .CurrentUser }}
+          {{ if $loggedIn }}
             <div class="panel-footer">
-              <form method="POST" action="/products/buy/{{ "product[:id]" }}">
+              <form method="POST" action="/products/buy/{{ $product.ID }}">
                 <fieldset>
                   <input class="btn btn-success btn-block" type="submit" name="buy" value="購入" />
                 </fieldset>
