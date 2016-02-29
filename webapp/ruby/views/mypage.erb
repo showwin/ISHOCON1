@@ -18,9 +18,9 @@
             <h4>価格</h4>
             <p><%= product[:price] %>円</p>
             <h4>商品説明</h4>
-            <p><%= product[:description][0..70] %>…</p>
+            <p><%= product[:description][0..69] %>…</p>
             <h4>購入日時</h4>
-            <p><%= product[:created_at] %></p>
+            <p><%= (product[:created_at]+9*60*60).strftime("%Y-%m-%d %H:%M:%S") %></p>
           </div>
           <% if current_user && user[:id] == current_user[:id] %>
             <div class="panel-footer">

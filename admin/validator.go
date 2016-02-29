@@ -172,7 +172,7 @@ func ValidateUsers(id int, loggedIn bool) {
 			if i == 2 {
 				str := s.Text()
 				timeformat := "2006-01-02 15:04:05 -0700"
-				created_at, _ := time.Parse(timeformat, str)
+				created_at, _ := time.Parse(timeformat, str+" +0900")
 				flg = time.Now().Before(created_at.Add(10*time.Second)) && flg
 			}
 		})
