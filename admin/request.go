@@ -77,6 +77,7 @@ func SendComment(c []*http.Cookie, productId int) (int, []*http.Cookie) {
 
 func HttpRequest(method string, path string, params url.Values, cookies []*http.Cookie) (int, []*http.Cookie) {
 	req, _ := http.NewRequest(method, host+path, strings.NewReader(params.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	jar, _ := cookiejar.New(nil)
 	CookieURL, _ := url.Parse(host + path)
 	jar.SetCookies(CookieURL, cookies)
