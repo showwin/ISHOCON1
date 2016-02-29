@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"github.com/gin-gonic/contrib/sessions"
@@ -71,16 +70,10 @@ func (u *User) BuyingHistory() (products []Product) {
 	for rows.Next() {
 		p := Product{}
 		var cAt string
+		fmt := "2006-01-02 15:04:05"
 		err = rows.Scan(&p.ID, &p.Name, &p.Description, &p.ImagePath, &p.Price, &cAt)
-		if err != nil {
-			panic(err.Error())
-		}
-		log.Print(cAt)
-		var tmp time.Time
-		tmp, err = time.Parse("2006-01-02 15:04:05", cAt)
-		tmp = tmp.Add(9 * time.Hour)
-		// TODO: +0900 がつかない
-		p.CreatedAt = tmp.Format("2006-01-02 15:04:05 -0700")
+		tmp, _ := time.Parse(fmt, cAt)
+		p.CreatedAt = (tmp.Add(9 * time.Hour)).Format(fmt)
 		if err != nil {
 			panic(err.Error())
 		}

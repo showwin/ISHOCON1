@@ -13,7 +13,7 @@
       <div class="col-md-4">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <a href="/products/<%= product[:id] %>">{{ $product.Name }}</a>
+            <a href="/products/{{ $product.ID }}">{{ $product.Name }}</a>
           </div>
           <div class="panel-body">
             <a href="/products/{{ $product.ID }}"><img src="{{ $product.ImagePath }}" class="img-responsive" /></a>

@@ -23,7 +23,8 @@ func main() {
 
 	// session store
 	store := sessions.NewCookieStore([]byte("showwin_happy"))
-	r.Use(sessions.Sessions("mysession", store))
+	store.Options(sessions.Options{HttpOnly: true})
+	r.Use(sessions.Sessions("mysssion", store))
 
 	// GET /login
 	r.GET("/login", func(c *gin.Context) {
@@ -50,9 +51,7 @@ func main() {
 			session.Set("uid", uid)
 			session.Save()
 
-			tmpl, _ := template.ParseFiles("templates/index.tmpl")
-			r.SetHTMLTemplate(tmpl)
-			c.Redirect(http.StatusFound, "/")
+			c.Redirect(http.StatusSeeOther, "/")
 		} else {
 			// ログイン失敗
 			tmpl, _ := template.ParseFiles("templates/login.tmpl")
