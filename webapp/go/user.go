@@ -15,14 +15,14 @@ type User struct {
 	LastLogin string
 }
 
-func authenticate(email string, password string) (uid int, result bool) {
-	var dbPass string
-	err := db().QueryRow("SELECT id, password FROM users WHERE email = ? LIMIT 1", email).Scan(&uid, &dbPass)
+func authenticate(email string, password string) (User, bool) {
+	var u User
+	err := db.QueryRow("SELECT * FROM users WHERE email = ? LIMIT 1", email).Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.LastLogin)
 	if err != nil {
-		return 0, false
+		return u, false
 	}
-	result = password == dbPass
-	return
+	result := u.Password == u.Password
+	return u, result
 }
 
 func notAuthenticated(session sessions.Session) bool {
@@ -32,7 +32,7 @@ func notAuthenticated(session sessions.Session) bool {
 
 func getUser(uid int) User {
 	u := User{}
-	r := db().QueryRow("SELECT * FROM users WHERE id = ? LIMIT 1", uid)
+	r := db.QueryRow("SELECT * FROM users WHERE id = ? LIMIT 1", uid)
 	err := r.Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.LastLogin)
 	if err != nil {
 		return u
@@ -44,7 +44,7 @@ func getUser(uid int) User {
 func currentUser(session sessions.Session) User {
 	uid := session.Get("uid")
 	u := User{}
-	r := db().QueryRow("SELECT * FROM users WHERE id = ? LIMIT 1", uid)
+	r := db.QueryRow("SELECT * FROM users WHERE id = ? LIMIT 1", uid)
 	err := r.Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.LastLogin)
 	if err != nil {
 		return u
@@ -55,7 +55,7 @@ func currentUser(session sessions.Session) User {
 
 // BuyingHistory : products which user had bought
 func (u *User) BuyingHistory() (products []Product) {
-	rows, err := db().Query(
+	rows, err := db.Query(
 		"SELECT p.id, p.name, p.description, p.image_path, p.price, h.created_at "+
 			"FROM histories as h "+
 			"LEFT OUTER JOIN products as p "+
@@ -85,14 +85,18 @@ func (u *User) BuyingHistory() (products []Product) {
 
 // BuyProduct : buy product
 func (u *User) BuyProduct(pid string) {
-	db().Exec(
+	db.Exec(
 		"INSERT INTO histories (product_id, user_id, created_at) VALUES (?, ?, ?)",
 		pid, u.ID, time.Now())
 }
 
 // CreateComment : create comment to the product
 func (u *User) CreateComment(pid string, content string) {
-	db().Exec(
+	db.Exec(
 		"INSERT INTO comments (product_id, user_id, content, created_at) VALUES (?, ?, ?, ?)",
 		pid, u.ID, content, time.Now())
+}
+
+func (u *User) UpdateLastLogin() {
+	db.Exec("UPDATE users SET last_login = ? WHERE id = ?", time.Now(), u.ID)
 }

@@ -10,7 +10,7 @@ type Comment struct {
 }
 
 func getComments(pid int) []Comment {
-	rows, err := db().Query("SELECT * FROM comments WHERE product_id = ? ", pid)
+	rows, err := db.Query("SELECT * FROM comments WHERE product_id = ? ", pid)
 	if err != nil {
 		return nil
 	}

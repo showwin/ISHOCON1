@@ -14,7 +14,16 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var db *sql.DB
+
 func main() {
+	// database setting
+	user := os.Getenv("ISHOCON1_DB_USER")
+	pass := os.Getenv("ISHOCON1_DB_PASSWORD")
+	dbname := "ishocon1"
+	db, _ = sql.Open("mysql", user+":"+pass+"@/"+dbname)
+	db.SetMaxIdleConns(5)
+
 	r := gin.Default()
 	// load templates
 	r.Use(static.Serve("/css", static.LocalFile("public/css", true)))
@@ -24,7 +33,7 @@ func main() {
 	// session store
 	store := sessions.NewCookieStore([]byte("showwin_happy"))
 	store.Options(sessions.Options{HttpOnly: true})
-	r.Use(sessions.Sessions("mysssion", store))
+	r.Use(sessions.Sessions("mysession", store))
 
 	// GET /login
 	r.GET("/login", func(c *gin.Context) {
@@ -45,15 +54,17 @@ func main() {
 		pass := c.PostForm("password")
 
 		session := sessions.Default(c)
-		uid, result := authenticate(email, pass)
+		user, result := authenticate(email, pass)
 		if result {
-			// ログイン成功
-			session.Set("uid", uid)
+			// 認証成功
+			session.Set("uid", user.ID)
 			session.Save()
+
+			user.UpdateLastLogin()
 
 			c.Redirect(http.StatusSeeOther, "/")
 		} else {
-			// ログイン失敗
+			// 認証失敗
 			tmpl, _ := template.ParseFiles("templates/login.tmpl")
 			r.SetHTMLTemplate(tmpl)
 			c.HTML(http.StatusOK, "login", gin.H{
@@ -201,24 +212,13 @@ func main() {
 
 	// GET /initialize
 	r.GET("/initialize", func(c *gin.Context) {
-		db().Exec("DELETE FROM users WHERE id > 5000")
-		db().Exec("DELETE FROM products WHERE id > 10000")
-		db().Exec("DELETE FROM comments WHERE id > 200000")
-		db().Exec("DELETE FROM histories WHERE id > 500000")
+		db.Exec("DELETE FROM users WHERE id > 5000")
+		db.Exec("DELETE FROM products WHERE id > 10000")
+		db.Exec("DELETE FROM comments WHERE id > 200000")
+		db.Exec("DELETE FROM histories WHERE id > 500000")
 
 		c.String(http.StatusOK, "Finish")
 	})
 
 	r.Run(":8080")
-}
-
-func db() *sql.DB {
-	user := os.Getenv("ISHOCON1_DB_USER")
-	pass := os.Getenv("ISHOCON1_DB_PASSWORD")
-	dbname := "ishocon1"
-	db, err := sql.Open("mysql", user+":"+pass+"@/"+dbname)
-	if err != nil {
-		panic(err.Error())
-	}
-	return db
 }

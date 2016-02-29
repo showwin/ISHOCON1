@@ -32,7 +32,7 @@ type CommentWriter struct {
 
 func getProduct(pid int) Product {
 	p := Product{}
-	row := db().QueryRow("SELECT * FROM products WHERE id = ? LIMIT 1", pid)
+	row := db.QueryRow("SELECT * FROM products WHERE id = ? LIMIT 1", pid)
 	err := row.Scan(&p.ID, &p.Name, &p.Description, &p.ImagePath, &p.Price, &p.CreatedAt)
 	if err != nil {
 		panic(err.Error())
@@ -44,7 +44,7 @@ func getProduct(pid int) Product {
 func getProductsWithCommentsAt(page int) []ProductWithComments {
 	// select 50 products with offset page*50
 	products := []ProductWithComments{}
-	rows, err := db().Query("SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET ?", page*50)
+	rows, err := db.Query("SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET ?", page*50)
 	if err != nil {
 		return nil
 	}
@@ -56,7 +56,7 @@ func getProductsWithCommentsAt(page int) []ProductWithComments {
 
 		// select comment count for the product
 		var cnt int
-		cnterr := db().QueryRow("SELECT count(*) as count FROM comments WHERE product_id = ?", p.ID).Scan(&cnt)
+		cnterr := db.QueryRow("SELECT count(*) as count FROM comments WHERE product_id = ?", p.ID).Scan(&cnt)
 		if cnterr != nil {
 			cnt = 0
 		}
@@ -66,7 +66,7 @@ func getProductsWithCommentsAt(page int) []ProductWithComments {
 			// select 5 comments and its writer for the product
 			var cWriters []CommentWriter
 
-			subrows, suberr := db().Query("SELECT * FROM comments as c INNER JOIN users as u "+
+			subrows, suberr := db.Query("SELECT * FROM comments as c INNER JOIN users as u "+
 				"ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5", p.ID)
 			if suberr != nil {
 				subrows = nil
@@ -94,7 +94,7 @@ func (p *Product) isBought(uid int) bool {
 	var count int
 	log.Print(uid)
 	log.Print(p.ID)
-	err := db().QueryRow(
+	err := db.QueryRow(
 		"SELECT count(*) as count FROM histories WHERE product_id = ? AND user_id = ?",
 		p.ID, uid,
 	).Scan(&count)
