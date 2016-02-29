@@ -14,139 +14,139 @@ import (
   ログインをして、商品一覧ページに多めにアクセスする (画像読み込み含む)
   サイトに負荷をかけているのに、商品を買わない嫌なユーザ
 */
-func JustLookingScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+func justLookingScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	score := 0
 	resp := 200
 	var c []*http.Cookie
 
-	_, email, password := GetUserInfo(0)
-	resp, c = PostLogin(c, email, password)
-	score = CalcScore(score, resp)
+	_, email, password := getUserInfo(0)
+	resp, c = postLogin(c, email, password)
+	score = calcScore(score, resp)
 
-	resp, c = GetIndex(c, 0)
-	score = CalcScore(score, resp)
-
-	for i := 0; i < 50; i++ {
-		resp, c = GetImage(c, i%5)
-		score = CalcScore(score, resp)
-	}
-	UpdateScore(score, wg, m, finishTime)
-	score = 0
-
-	resp, c = GetIndex(c, GetRand(50, 99))
-	score = CalcScore(score, resp)
-
-	resp, c = GetIndex(c, GetRand(100, 149))
-	score = CalcScore(score, resp)
+	resp, c = getIndex(c, 0)
+	score = calcScore(score, resp)
 
 	for i := 0; i < 50; i++ {
-		resp, c = GetImage(c, i%5)
-		score = CalcScore(score, resp)
+		resp, c = getImage(c, i%5)
+		score = calcScore(score, resp)
 	}
-	UpdateScore(score, wg, m, finishTime)
+	updateScore(score, wg, m, finishTime)
 	score = 0
 
-	resp, c = GetIndex(c, GetRand(150, 199))
-	score = CalcScore(score, resp)
+	resp, c = getIndex(c, getRand(50, 99))
+	score = calcScore(score, resp)
 
-	resp, c = GetProduct(c, 0)
-	score = CalcScore(score, resp)
+	resp, c = getIndex(c, getRand(100, 149))
+	score = calcScore(score, resp)
 
-	resp, c = GetProduct(c, 0)
-	score = CalcScore(score, resp)
+	for i := 0; i < 50; i++ {
+		resp, c = getImage(c, i%5)
+		score = calcScore(score, resp)
+	}
+	updateScore(score, wg, m, finishTime)
+	score = 0
 
-	resp, c = GetProduct(c, 0)
-	score = CalcScore(score, resp)
+	resp, c = getIndex(c, getRand(150, 199))
+	score = calcScore(score, resp)
 
-	resp, c = GetLogout(c)
-	score = CalcScore(score, resp)
+	resp, c = getProduct(c, 0)
+	score = calcScore(score, resp)
 
-	UpdateScore(score, wg, m, finishTime)
+	resp, c = getProduct(c, 0)
+	score = calcScore(score, resp)
+
+	resp, c = getProduct(c, 0)
+	score = calcScore(score, resp)
+
+	resp, c = getLogout(c)
+	score = calcScore(score, resp)
+
+	updateScore(score, wg, m, finishTime)
 }
 
 /*
   ログインしないで、ユーザページに多めにアクセスする
   他人の購入履歴を見てニヤニヤしている、ネットストーカー
 */
-func StalkerScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+func stalkerScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	score := 0
 	resp := 200
 	var c []*http.Cookie
 
-	resp, c = GetIndex(c, 0)
-	score = CalcScore(score, resp)
+	resp, c = getIndex(c, 0)
+	score = calcScore(score, resp)
 
 	// id:1234 よく商品を買うユーザ
-	resp, c = GetUserPage(c, 1234)
-	score = CalcScore(score, resp)
+	resp, c = getUserPage(c, 1234)
+	score = calcScore(score, resp)
 
-	resp, c = GetUserPage(c, 0)
-	score = CalcScore(score, resp)
+	resp, c = getUserPage(c, 0)
+	score = calcScore(score, resp)
 
-	resp, c = GetUserPage(c, 0)
-	score = CalcScore(score, resp)
+	resp, c = getUserPage(c, 0)
+	score = calcScore(score, resp)
 
-	resp, c = GetUserPage(c, 0)
-	score = CalcScore(score, resp)
+	resp, c = getUserPage(c, 0)
+	score = calcScore(score, resp)
 
-	UpdateScore(score, wg, m, finishTime)
+	updateScore(score, wg, m, finishTime)
 }
 
 /*
   ひたすら商品を買って、コメントをする
   近年経済成長し、品質の高い先進国の商品を買いたくなっている人
 */
-func BakugaiScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+func bakugaiScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	score := 0
 	resp := 200
 	var c []*http.Cookie
 
 	// 1/3 の確率で id:1234 のユーザが爆買いする
-	uId := 0
-	if GetRand(1, 2) == 1 {
-		uId = 1234
+	uID := 0
+	if getRand(1, 2) == 1 {
+		uID = 1234
 	}
 
-	_, email, password := GetUserInfo(uId)
-	resp, c = PostLogin(c, email, password)
-	score = CalcScore(score, resp)
+	_, email, password := getUserInfo(uID)
+	resp, c = postLogin(c, email, password)
+	score = calcScore(score, resp)
 
-	resp, c = GetIndex(c, GetRand(100, 199))
-	score = CalcScore(score, resp)
+	resp, c = getIndex(c, getRand(100, 199))
+	score = calcScore(score, resp)
 
 	for i := 0; i < 20; i++ {
-		resp, c = BuyProduct(c, 0)
-		score = CalcScore(score, resp)
+		resp, c = buyProduct(c, 0)
+		score = calcScore(score, resp)
 	}
-	UpdateScore(score, wg, m, finishTime)
+	updateScore(score, wg, m, finishTime)
 	score = 0
 
 	for i := 0; i < 5; i++ {
-		resp, c = SendComment(c, 0)
-		score = CalcScore(score, resp)
+		resp, c = sendComment(c, 0)
+		score = calcScore(score, resp)
 	}
 
-	resp, c = GetLogout(c)
-	score = CalcScore(score, resp)
+	resp, c = getLogout(c)
+	score = calcScore(score, resp)
 
-	UpdateScore(score, wg, m, finishTime)
+	updateScore(score, wg, m, finishTime)
 }
 
 // 以下、スコア計算用
-func UpdateScore(score int, wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+func updateScore(score int, wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	m.Lock()
 	defer m.Unlock()
-	TotalScore = TotalScore + score
+	totalScore = totalScore + score
 	if time.Now().After(finishTime) {
 		wg.Done()
-		if Finished == false {
-			Finished = true
-			ShowScore()
+		if finished == false {
+			finished = true
+			showScore()
 		}
 	}
 }
 
-func CalcScore(score int, response int) int {
+func calcScore(score int, response int) int {
 	if response == 200 {
 		return score + 1
 	} else if strings.Contains(strconv.Itoa(response), "4") {

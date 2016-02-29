@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"strconv"
 	"sync"
 	"time"
@@ -10,47 +11,47 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func LoopJustLookingScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+func loopJustLookingScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	for {
-		JustLookingScenario(wg, m, finishTime)
+		justLookingScenario(wg, m, finishTime)
 	}
 }
 
-func LoopStalkerScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+func loopStalkerScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	for {
-		StalkerScenario(wg, m, finishTime)
+		stalkerScenario(wg, m, finishTime)
 	}
 }
 
-func LoopBakugaiScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
+func loopBakugaiScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	for {
-		BakugaiScenario(wg, m, finishTime)
+		bakugaiScenario(wg, m, finishTime)
 	}
 }
 
-func StartBenchmark(workload int) {
-	GetInitialize()
-	ShowLog("Benchmark Start!  Workload: " + strconv.Itoa(workload))
+func startBenchmark(workload int) {
+	getInitialize()
+	log.Print("Benchmark Start!  Workload: " + strconv.Itoa(workload))
 	finishTime := time.Now().Add(1 * time.Minute)
-	ValidateInitialize()
+	validateInitialize()
 	wg := new(sync.WaitGroup)
 	m := new(sync.Mutex)
 	for i := 0; i < workload; i++ {
 		wg.Add(1)
 		if i%3 == 0 {
-			go LoopJustLookingScenario(wg, m, finishTime)
+			go loopJustLookingScenario(wg, m, finishTime)
 		} else if i%3 == 1 {
-			go LoopStalkerScenario(wg, m, finishTime)
+			go loopStalkerScenario(wg, m, finishTime)
 		} else {
-			go LoopBakugaiScenario(wg, m, finishTime)
+			go loopBakugaiScenario(wg, m, finishTime)
 		}
 	}
 	wg.Wait()
 }
 
 var host = "http://127.0.0.1"
-var TotalScore = 9
-var Finished = false
+var totalScore = 9
+var finished = false
 
 func main() {
 	flag.Usage = func() {
@@ -67,5 +68,5 @@ Options:
 	flag.Parse()
 	host = "http://" + *ip
 
-	StartBenchmark(*workload)
+	startBenchmark(*workload)
 }

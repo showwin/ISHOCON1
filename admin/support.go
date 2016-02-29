@@ -15,9 +15,9 @@ func choice(s []string) string {
 }
 
 // ランダムにユーザー情報を取得
-func GetUserInfo(id int) (int, string, string) {
+func getUserInfo(id int) (int, string, string) {
 	if id == 0 {
-		id = GetRand(1, 5000)
+		id = getRand(1, 5000)
 	}
 	var email, password string
 	db, err := sql.Open("mysql", "ishocon:ishocon@/ishocon1")
@@ -35,7 +35,7 @@ func GetUserInfo(id int) (int, string, string) {
 }
 
 // from から to までの値をランダムに取得
-func GetRand(from int, to int) int {
+func getRand(from int, to int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(to+1-from) + from
 }

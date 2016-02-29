@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -13,24 +14,24 @@ import (
 )
 
 // 初期化確認
-func ValidateInitialize() {
-	ValidateIndex(10, false)
-	ValidateProducts(false)
-	ValidateUsers(1500, false)
-	id, email, password := GetUserInfo(0)
+func validateInitialize() {
+	validateIndex(10, false)
+	validateProducts(false)
+	validateUsers(1500, false)
+	id, email, password := getUserInfo(0)
 	var c []*http.Cookie
-	_, c = PostLogin(c, email, password)
-	BuyProduct(c, 10000)
-	ValidateUsers(id, true)
-	SendComment(c, 10000)
-	ValidateIndex(0, true)
+	_, c = postLogin(c, email, password)
+	buyProduct(c, 10000)
+	validateUsers(id, true)
+	sendComment(c, 10000)
+	validateIndex(0, true)
 }
 
-func ValidateIndex(page int, loggedIn bool) {
+func validateIndex(page int, loggedIn bool) {
 	var flg, flg1, flg2, flg3 bool
 	doc, err := goquery.NewDocument(host + "/?page=" + strconv.Itoa(page))
 	if err != nil {
-		ShowLog("Cannot GET /index")
+		log.Print("Cannot GET /index")
 		os.Exit(1)
 	}
 
@@ -97,16 +98,16 @@ func ValidateIndex(page int, loggedIn bool) {
 
 	// 全体の確認
 	if flg == false {
-		ShowLog("Invalid Content or DOM at GET /index")
+		log.Print("Invalid Content or DOM at GET /index")
 		os.Exit(1)
 	}
 }
 
-func ValidateProducts(loggedIn bool) {
+func validateProducts(loggedIn bool) {
 	var flg bool
 	doc, err := goquery.NewDocument(host + "/products/1500")
 	if err != nil {
-		ShowLog("Cannot GET /products/:id")
+		log.Print("Cannot GET /products/:id")
 		os.Exit(1)
 	}
 	// 画像パスの確認
@@ -132,16 +133,16 @@ func ValidateProducts(loggedIn bool) {
 
 	// 全体の確認
 	if flg == false {
-		ShowLog("Invalid Content or DOM at GET /products/:id")
+		log.Print("Invalid Content or DOM at GET /products/:id")
 		os.Exit(1)
 	}
 }
 
-func ValidateUsers(id int, loggedIn bool) {
+func validateUsers(id int, loggedIn bool) {
 	var flg bool
 	doc, err := goquery.NewDocument(host + "/users/" + strconv.Itoa(id))
 	if err != nil {
-		ShowLog("Cannot GET /users/:id")
+		log.Print("Cannot GET /users/:id")
 		os.Exit(1)
 	}
 
@@ -153,7 +154,7 @@ func ValidateUsers(id int, loggedIn bool) {
 	flg = doc.Find(".panel-body").First().Children().Size() == 7 && flg
 
 	// 合計金額の確認
-	sum := GetTotalPay(id)
+	sum := getTotalPay(id)
 	doc.Find(".container h4").EachWithBreak(func(_ int, s *goquery.Selection) bool {
 		str := s.Text()
 		flg = str == "合計金額: "+sum+"円" && flg
@@ -172,20 +173,20 @@ func ValidateUsers(id int, loggedIn bool) {
 			if i == 2 {
 				str := s.Text()
 				timeformat := "2006-01-02 15:04:05 -0700"
-				created_at, _ := time.Parse(timeformat, str+" +0900")
-				flg = time.Now().Before(created_at.Add(10*time.Second)) && flg
+				createdAt, _ := time.Parse(timeformat, str+" +0900")
+				flg = time.Now().Before(createdAt.Add(10*time.Second)) && flg
 			}
 		})
 	}
 
 	// 全体の確認
 	if flg == false {
-		ShowLog("Invalid Content or DOM at GET /users/:id")
+		log.Print("Invalid Content or DOM at GET /users/:id")
 		os.Exit(1)
 	}
 }
 
-func GetTotalPay(user_id int) string {
+func getTotalPay(userID int) string {
 	db, err := sql.Open("mysql", "ishocon:ishocon@/ishocon1")
 	if err != nil {
 		panic(err.Error())
@@ -198,11 +199,11 @@ func GetTotalPay(user_id int) string {
     INNER JOIN products as p
     ON p.id = h.product_id
     WHERE h.user_id = ?`
-	var total_pay string
-	err = db.QueryRow(query, user_id).Scan(&total_pay)
+	var totalPay string
+	err = db.QueryRow(query, userID).Scan(&totalPay)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	return total_pay
+	return totalPay
 }
