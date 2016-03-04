@@ -51,6 +51,7 @@ $ unicorn -c unicorn_config.rb
 #### Go の場合
 ```
 $ cd ~/webapp/go
+$ go get -t -d -v ./...
 $ go build -o webapp *.go
 $ ./webapp
 ```
