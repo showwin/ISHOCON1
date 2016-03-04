@@ -21,5 +21,5 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
 |:--:|:--:|:--:|:--:|
 |[showwin](https://twitter.com/showwin)|78699|[showwin/ISHOCON1_me](https://github.com/showwin/ISHOCON1_me/tree/dc7273d6cfdc90edb43d9490e7538ec63f06a99e)|2015/11/12のぼくではこれが限界だ|
 |[showwin](https://twitter.com/showwin)|48642|[showwin/ISHOCON1_me](https://github.com/showwin/ISHOCON1_me/tree/c04b20faee30a5aeb315c33bee6ad8b4c7d87ce7)|2015/11/11のぼくではこれが限界だ|
+|初期状態|193|-|初期実装(Go)のworkloadが3で193点になりました。|
 |初期状態|104|-|初期実装(Ruby)のworkloadが3で104点になりました。|
-|初期状態|104|-|初期実装(Go)のworkloadが3で104点になりました。|
