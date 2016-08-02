@@ -4,7 +4,7 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-dd727fb3
+* AMI: ami-999d58f8
 * Instance Type: c3.xlarge
 * EBS Optimization: なし
 * Root Volume: 8GB, Magnetic
@@ -39,6 +39,16 @@ $ ls
  db_init.sh   #DBの初期化スクリプト(後で説明)
  init         #DB初期化に必要なスクリプト(中身は変更しないでください)
  webapp       #最適化するアプリケーション
+```
+
+### チーム名を登録する
+```
+$ vim ~/.bashrc
+
+# 13行目
+export TEAMNAME='new_team_name'
+
+$ source ~/.bashrc
 ```
 
 ### Web サーバーを立ち上げる
@@ -78,6 +88,7 @@ $ ./benchmark --workload 3
 * 何も指定しない場合は3で実行されます。
 * 初期実装でスコアは100点前後になると思います。(workloadが3の場合)
 * 並列度が高い場合は1分以上経っても終了しない場合がありますが、スコアには影響ありません。
+* 他の参加者のスコアは http://ishocon1-portal.s3-website-ap-northeast-1.amazonaws.com/ のポータルで確認できます
 
 ## MySQL
 3306 番ポートで MySQL(5.5) が起動しています。初期状態では以下のユーザが設定されています。
