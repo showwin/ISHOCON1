@@ -4,8 +4,8 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-dd727fb3
-* Instance Type: c3.xlarge
+* AMI: ami-790fe61f
+* Instance Type: c4.xlarge
 * EBS Optimization: なし
 * Root Volume: 8GB, Magnetic
 
@@ -107,10 +107,6 @@ $ ./db_init.sh
 期待しないレスポンスが返ってきた場合にはその場でベンチマーカーが停止し、スコアは表示されません。
 * 1分間の負荷走行の前にベンチマーカーが `/initialize` にアクセスをして、データの初期化を行います。
 初期化で1分以内にレスポンスが返らない場合には無効となりスコアは表示されません。
-
-* **満足なスコアが得られた場合には是非 [showwin/ISHOCON1](https://github.com/showwin/ISHOCON1) のREADMEに自分のスコアを載せてプルリクエストを送ってください。**
-* **満足なスコアが得られた場合には是非 [showwin/ISHOCON1](https://github.com/showwin/ISHOCON1) のREADMEに自分のスコアを載せてプルリクエストを送ってください。**
-* 大切なことなので2回書いておきました。
 
 ## 許されないこと
 * インスタンスを複数台用いることや、規定のインスタンスと別のタイプを使用すること。
