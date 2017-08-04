@@ -80,7 +80,7 @@ def authenticated():
 def current_user():
     if 'user_id' in session:
         cur = db().cursor()
-        cur.execute('SELECT * FROM users WHERE id = %s', str(session['user_id']))
+        cur.execute('SELECT * FROM users WHERE id = %s', (str(session['user_id']),))
         return cur.fetchone()
     else:
         return None
