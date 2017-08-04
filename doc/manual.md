@@ -48,6 +48,12 @@ $ cd ~/webapp/ruby
 $ unicorn -c unicorn_config.rb
 ```
 
+#### Python の場合
+```
+$ cd ~/webapp/python
+$ gunicorn -c gunicorn_config.py app:app
+```
+
 #### Go の場合
 ```
 $ cd ~/webapp/go
