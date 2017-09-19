@@ -10,7 +10,7 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
 
 ## 問題詳細
 * マニュアル: [ISHOCON1マニュアル](https://github.com/showwin/ISHOCON1/blob/master/doc/manual.md)
-* AMI: `ami-790fe61f`
+* AMI: `ami-374e8151`
 * インスタンスタイプ: `c4.xlarge`
 * 参考実装言語: Ruby, Go
 
