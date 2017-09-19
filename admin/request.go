@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"log"
 	"net/http"
 	"net/http/cookiejar"
@@ -96,4 +97,22 @@ func showScore() {
 	log.Print("Benchmark Finish!")
 	log.Print("Score: " + strconv.Itoa(totalScore))
 	log.Print("Waiting for Stopping All Benchmarkers ...")
+
+	teamName := os.Getenv("TEAMNAME")
+	jsonStr := `{"pass":true, "score":` + strconv.Itoa(totalScore) + `, "timestamp": {".sv":"timestamp"}}`
+	req, err := http.NewRequest(
+		"POST",
+		"https://ishocon1.firebaseio.com/teams/"+teamName+".json",
+		bytes.NewBuffer([]byte(jsonStr)),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
 }
