@@ -25,8 +25,8 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
   * Rubyで6万点取るぐらいまでの解説。([@showwin](https://twitter.com/showwin) の技術レベルが低い頃のスライドなのであまり価値ない)
 * [ISHOCON1 〜個人参加のISUCON練習コンテスト〜](https://scouty.connpass.com/event/65322/)
   * ISUCON7のフォーミングアップとして個人でISHOCONを解くイベントをやりました
-* [ISUCON勉強会 ISHOCON1 を開催しました](https://www.wantedly.com/companies/scouty/post_articles/79778)
-  * ISHOCON1の開催レポート (by [@showwin](https://twitter.com/showwin))
+* [ISUCON勉強会 ISHOCON1 を開催しました](https://www.wantedly.com/companies/scouty/post_articles/79778)  
+  * ISHOCON1の開催レポート (by [@showwin](https://twitter.com/showwin))
 * [ISHOCON1に参加した #scouty_ishocon](http://utgwkk.hateblo.jp/entry/2017/10/07/214659)
   * 上のイベントの参加レビュー (by [@utgwkk](https://twitter.com/utgwkk))
 * [ISUCON模試を開催して運営&参加してきた](http://saboyutaka.hatenablog.com/entry/2017/10/09/003257)
