@@ -21,7 +21,7 @@ func authenticate(email string, password string) (User, bool) {
 	if err != nil {
 		return u, false
 	}
-	result := u.Password == u.Password
+	result := password == u.Password
 	return u, result
 }
 
