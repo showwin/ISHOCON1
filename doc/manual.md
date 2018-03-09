@@ -61,6 +61,14 @@ $ go get -t -d -v ./...
 $ go build -o webapp *.go
 $ ./webapp
 ```
+
+#### Crystal の場合
+```
+$ cd ~/webapp/crystal
+$ shards install
+$ crystal build app.cr
+$ ./app
+```
 これでブラウザからアプリケーションが見れるようになるので、IPアドレスにアクセスしてみましょう。  
 
 **トップページ**
