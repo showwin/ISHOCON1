@@ -9,7 +9,7 @@ require "./db"
 
 Kemal::Session.config do |config|
 	config.cookie_name = "mysession"
-	config.secret = "showwin_happy"
+	config.secret = ENV["ISHOCON1_SESSION_SECRET"]? || "showwin_happy"
 end
 
 public_folder "public"
