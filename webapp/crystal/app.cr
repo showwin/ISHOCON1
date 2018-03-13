@@ -22,7 +22,9 @@ get "/login" do |env|
 end
 
 post "/login" do |env|
-	user = authenticate(env.params.body["email"], env.params.body["password"])
+	email = env.params.body["email"]? || ""
+	password = env.params.body["password"]? || ""
+	user = authenticate(email, password)
 	if user
 		env.session.int("uid", user.id)
 		user.update_last_login
@@ -119,7 +121,7 @@ post "/products/buy/:product_id" do |env|
 		pid = env.params.url["product_id"]? || "0"
 		c_user.buy_product(pid)
 
-		env.redirect "/users/"+c_user.id.to_s
+		env.redirect "/users/" + c_user.id.to_s
 	end
 end
 
@@ -134,7 +136,7 @@ post "/comments/:product_id" do |env|
 		comment = env.params.body["content"]? || ""
 		c_user.create_comment(pid, comment)
 
-		env.redirect "/users/"+c_user.id.to_s
+		env.redirect "/users/" + c_user.id.to_s
 	end
 end
 

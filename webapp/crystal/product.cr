@@ -16,7 +16,7 @@ class Product
 
 	def is_bought(uid : Int32)
 		count = Database.query_one "SELECT count(*) as count FROM histories WHERE product_id = ? AND user_id = ?", @id, uid, as: {Int64}
-		return count>0
+		return count > 0
 	end
 end
 
