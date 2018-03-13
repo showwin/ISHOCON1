@@ -8,8 +8,8 @@ require "./product"
 require "./db"
 
 Kemal::Session.config do |config|
-	config.cookie_name = "showwin_happy"
-	config.secret = "mysession"
+	config.cookie_name = "mysession"
+	config.secret = "showwin_happy"
 end
 
 public_folder "public"
