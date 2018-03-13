@@ -1,0 +1,41 @@
+<div class="jumbotron">
+  <div class="container">
+    <h2><%= user.name %> さんの購入履歴</h2>
+    <h4>合計金額: <%= total_pay %>円</h4>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <% sd_products.each_with_index do |product, index| %>
+      <% break if index >= 30 %>
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a href="/products/<%= product.id %>"><%= product.name %></a>
+          </div>
+          <div class="panel-body">
+            <a href="/products/<%= product.id %>"><img src="<%= product.image_path %>" class="img-responsive" /></a>
+            <h4>価格</h4>
+            <p><%= product.price %>円</p>
+            <h4>商品説明</h4>
+            <p><%= product.description %></p>
+            <h4>購入日時</h4>
+            <p><%= product.created_at + 9.hour %></p>
+          </div>
+          <% if c_user && user.id == c_user.id %>
+            <div class="panel-footer">
+              <form method="POST" action="/comments/<%= product.id %>">
+                <fieldset>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="Comment Here" name="content" value="">
+                  </div>
+                  <input class="btn btn-success btn-block" type="submit" name="send_comment" value="コメントを送信" />
+                </fieldset>
+              </form>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
