@@ -31,9 +31,9 @@ func main() {
 	layout := "templates/layout.tmpl"
 
 	// session store
-	store := sessions.NewCookieStore([]byte("showwin_happy"))
+	store := sessions.NewCookieStore([]byte("mysession"))
 	store.Options(sessions.Options{HttpOnly: true})
-	r.Use(sessions.Sessions("mysession", store))
+	r.Use(sessions.Sessions("showwin_happy", store))
 
 	// GET /login
 	r.GET("/login", func(c *gin.Context) {
