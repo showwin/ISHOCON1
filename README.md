@@ -31,6 +31,8 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
   * 上のイベントの参加レビュー (by [@utgwkk](https://twitter.com/utgwkk))
 * [ISUCON模試を開催して運営&参加してきた](http://saboyutaka.hatenablog.com/entry/2017/10/09/003257)
   * ISUCON模擬試験のイベントでISHOCON1を問題として採用して頂きました
+* [ISHOCON1をCrystalで書いたお気持ち](http://goryudyuma.hatenablog.jp/entry/2018/03/14/174935)  
+  * Crystal実装を追加してくださったお気持ちブログです。必読です！ (by [@Goryudyuma](https://twitter.com/Goryudyuma))
 
 ## ISHOCONシリーズ
 * [ISHOCON1](https://github.com/showwin/ISHOCON1)
