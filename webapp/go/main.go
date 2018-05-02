@@ -20,7 +20,7 @@ func main() {
 	// database setting
 	user := os.Getenv("ISHOCON1_DB_USER")
 	pass := os.Getenv("ISHOCON1_DB_PASSWORD")
-	dbname := "ishocon1"
+	dbname := os.Getenv("ISHOCON1_DB_NAME")
 	db, _ = sql.Open("mysql", user+":"+pass+"@/"+dbname)
 	db.SetMaxIdleConns(5)
 

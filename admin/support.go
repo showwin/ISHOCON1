@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"math/rand"
+	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -20,7 +21,10 @@ func getUserInfo(id int) (int, string, string) {
 		id = getRand(1, 5000)
 	}
 	var email, password string
-	db, err := sql.Open("mysql", "ishocon:ishocon@/ishocon1")
+	user := os.Getenv("ISHOCON1_DB_USER")
+	pass := os.Getenv("ISHOCON1_DB_PASSWORD")
+	dbname := os.Getenv("ISHOCON1_DB_NAME")
+	db, err := sql.Open("mysql", user+":"+pass+"@/"+dbname)
 	if err != nil {
 		panic(err.Error())
 	}
