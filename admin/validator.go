@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -224,10 +223,7 @@ func validateUsers(id int, loggedIn bool) {
 }
 
 func getTotalPay(userID int) string {
-	user := os.Getenv("ISHOCON1_DB_USER")
-	pass := os.Getenv("ISHOCON1_DB_PASSWORD")
-	dbname := os.Getenv("ISHOCON1_DB_NAME")
-	db, err := sql.Open("mysql", user+":"+pass+"@/"+dbname)
+	db, err := getDB()
 	if err != nil {
 		panic(err.Error())
 	}
