@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"math/rand"
 	"time"
 
@@ -20,7 +19,7 @@ func getUserInfo(id int) (int, string, string) {
 		id = getRand(1, 5000)
 	}
 	var email, password string
-	db, err := sql.Open("mysql", "ishocon:ishocon@/ishocon1")
+	db, err := getDB()
 	if err != nil {
 		panic(err.Error())
 	}

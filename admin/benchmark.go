@@ -1,9 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -27,6 +29,21 @@ func loopBakugaiScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time
 	for {
 		bakugaiScenario(wg, m, finishTime)
 	}
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
+func getDB() (*sql.DB, error) {
+	user := getEnv("ISHOCON1_DB_USER", "ishocon")
+	pass := getEnv("ISHOCON1_DB_PASSWORD", "ishocon")
+	dbname := getEnv("ISHOCON1_DB_NAME", "ishocon1")
+	db, err := sql.Open("mysql", user+":"+pass+"@/"+dbname)
+	return db, err
 }
 
 func startBenchmark(workload int) {
