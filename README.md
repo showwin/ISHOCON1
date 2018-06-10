@@ -12,7 +12,7 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
 * マニュアル: [ISHOCON1マニュアル](https://github.com/showwin/ISHOCON1/blob/master/doc/manual.md)
 * AMI: `ami-03134665`
 * インスタンスタイプ: `c4.xlarge`
-* 参考実装言語: Ruby, Go, Python, Crystal(by [@Goryudyuma](https://github.com/Goryudyuma))
+* 参考実装言語: Ruby, Go, Python, Crystal(by [@Goryudyuma](https://github.com/Goryudyuma)), Scala(by [@Goryudyuma](https://github.com/Goryudyuma))
 
 ## 関連リンク
 
