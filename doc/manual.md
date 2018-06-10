@@ -69,6 +69,14 @@ $ shards install
 $ crystal build app.cr
 $ ./app
 ```
+
+#### Scala の場合
+```
+$ cd ~/webapp/scala
+$ sbt
+> ~;jetty:stop;jetty:start
+```
+
 これでブラウザからアプリケーションが見れるようになるので、IPアドレスにアクセスしてみましょう。  
 
 **トップページ**

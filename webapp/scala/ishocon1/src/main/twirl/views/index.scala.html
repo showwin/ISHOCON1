@@ -1,0 +1,41 @@
+@(currentUser: Option[ishocon1.User], products: Vector[ishocon1.ProductView])
+<div class="jumbotron">
+  <div class="container">
+    <h1>今日は大安売りの日です！</h1>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    @for(productView <- products){
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a href="/products/@(productView.product.id)">@(productView.product.name)</a>
+          </div>
+          <div class="panel-body">
+            <a href="/products/@(productView.product.id)"><img src="@(productView.product.imagePath)" class="img-responsive" /></a>
+            <h4>価格</h4>
+            <p>@(productView.product.price)円</p>
+            <h4>商品説明</h4>
+            <p>@(productView.product.description)</p>
+            <h4>@(productView.commentCount)件のレビュー</h4>
+            <ul>
+              @for(commentWithWriter <- productView.comments){
+                <li>@(commentWithWriter.comment.content) by @(commentWithWriter.writer)</li>
+              }
+            </ul>
+          </div>
+          @if(currentUser.isDefined){
+            <div class="panel-footer">
+              <form method="POST" action="/products/buy/@(productView.product.id)">
+                <fieldset>
+                  <input class="btn btn-success btn-block" type="submit" name="buy" value="購入" />
+                </fieldset>
+              </form>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
