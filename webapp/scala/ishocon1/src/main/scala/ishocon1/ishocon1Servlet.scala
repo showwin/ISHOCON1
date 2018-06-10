@@ -12,12 +12,16 @@ import java.sql._
 import slick.jdbc.GetResult
 
 case class User(id: Int, name: String, email: String, password: String, lastLogin: java.sql.Timestamp)
+
 case class Product(id: Int, name: String, description: String, imagePath: String, price: Int, createdAt: java.sql.Timestamp)
+
 case class Comment(id: Int, productId: Int, userId: Int, content: String, createdAt: java.sql.Timestamp)
+
 case class CommentWithWriter(comment: Comment, writer: String)
+
 case class ProductView(product: Product, commentCount: Int, comments: Vector[CommentWithWriter])
 
-class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport{
+class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport {
   implicit val getUserResult = GetResult(r => User(r.nextInt, r.nextString, r.nextString, r.nextString, r.nextTimestamp))
   implicit val getProductResult = GetResult(r => Product(r.nextInt, r.nextString, r.nextString, r.nextString, r.nextInt, r.nextTimestamp))
   implicit val getCommentResult = GetResult(r => Comment(r.nextInt, r.nextInt, r.nextInt, r.nextString, r.nextTimestamp))
@@ -31,9 +35,9 @@ class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport{
   val dbName = sys.env.getOrElse("ISHOCON1_DB_NAME", "ishocon1")
   val db = Database.forURL(
     "jdbc:%s://%s:%d/%s?characterEncoding=UTF-8&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC".format(dbType, dbHost, dbPort, dbName),
-    driver="com.mysql.cj.jdbc.Driver",
-    user=dbUser,
-    password=dbPassword)
+    driver = "com.mysql.cj.jdbc.Driver",
+    user = dbUser,
+    password = dbPassword)
 
   def timeNowDb(): Timestamp = {
     Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Tokyo")))
@@ -42,20 +46,20 @@ class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport{
   def authenticate(email: String, password: String): Unit = {
     val query = db.run(sql"SELECT * FROM users WHERE email = $email".as[User])
     val users = Await.result(query, Duration.Inf)
-    if((users.headOption match{
+    if ((users.headOption match {
       case Some(u) => (u.password == password)
       case None => false
-    }) == false)(throw new AuthenticationErrorException())
-    
+    }) == false) (throw new AuthenticationErrorException())
+
     session("uid") = users.head.id
   }
 
   def authenticated() = {
-    if(currentUser.isEmpty)(throw new PermissionDeniedException())
+    if (currentUser.isEmpty) (throw new PermissionDeniedException())
   }
 
   def currentUser(): Option[User] = {
-    if(!session.contains("uid"))(None)else{
+    if (!session.contains("uid")) (None) else {
       val userId = session("uid").asInstanceOf[Int]
       val query = db.run(sql"SELECT * FROM users WHERE id = $userId".as[User])
       val users = Await.result(query, Duration.Inf)
@@ -76,9 +80,9 @@ class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport{
   }
 
   def alreadyBought(productId: Int): Boolean = {
-    currentUser match{
+    currentUser match {
       case None => false
-      case Some(user) =>{
+      case Some(user) => {
         val userId = user.id
         val query = db.run(sql"SELECT count(*) as count FROM histories WHERE product_id = $productId AND user_id = $userId".as[Int])
         val count = Await.result(query, Duration.Inf).head
@@ -94,37 +98,40 @@ class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport{
   }
 
   case class AuthenticationErrorException() extends Exception()
+
   case class PermissionDeniedException() extends Exception()
+
   val errorHandling: PartialFunction[Throwable, Unit] = {
-    case e:AuthenticationErrorException => {
+    case e: AuthenticationErrorException => {
       session.remove("uid")
       halt(401, views.html.login("ログインに失敗しました"))
     }
-    case e:PermissionDeniedException => {
+    case e: PermissionDeniedException => {
       halt(403, views.html.login("先にログインをしてください"))
     }
   }
 
   get("/login") {
-    if(session.contains("uid"))session.remove("uid")
+    if (session.contains("uid")) session.remove("uid")
     views.html.login("ECサイトで爆買いしよう！！！！")
   }
 
   case class ValidationForm(
-    email: String,
-    password: String,
-  )
+                             email: String,
+                             password: String,
+                           )
+
   val loginform = mapping(
     "email" -> text(),
     "password" -> text()
   )(ValidationForm.apply)
   post("/login") {
-    try{
+    try {
       validate(loginform)(
-        errors => (throw new  AuthenticationErrorException()),
+        errors => (throw new AuthenticationErrorException()),
         form => {
           authenticate(form.email, form.password)
-          
+
           val User = currentUser.get
           updateLastLogin(User.id)
           redirect("/")
@@ -134,7 +141,7 @@ class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport{
   }
 
   get("/logout") {
-    if(session.contains("uid"))(session.remove("uid"))
+    if (session.contains("uid")) (session.remove("uid"))
     redirect("/login")
   }
 
@@ -146,7 +153,7 @@ class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport{
     val productsView: Vector[ProductView] = productsRaw.map(p => {
       val pId = p.id
       val query2 = db.run(sql"SELECT count(*) as count FROM comments WHERE product_id = $pId".as[Int])
-      val commentCount =  Await.result(query2, Duration.Inf).head
+      val commentCount = Await.result(query2, Duration.Inf).head
 
       val query3 = db.run(sql"SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = $pId ORDER BY c.created_at DESC LIMIT 5".as[CommentWithWriter])
       val commentWithWriters = Await.result(query3, Duration.Inf)
@@ -200,7 +207,7 @@ ORDER BY h.id DESC
       val cUser = currentUser
       val productId = params("productId")
       buyProduct(productId.toInt, cUser.get.id)
-      redirect("/users/"+(cUser.get.id.toString))
+      redirect("/users/" + (cUser.get.id.toString))
     } catch errorHandling
   }
 
@@ -211,7 +218,7 @@ ORDER BY h.id DESC
       val productId = params("productId")
       val content = params("content")
       createComment(productId.toInt, cUser.get.id, content)
-      redirect("/users/"+(cUser.get.id.toString))
+      redirect("/users/" + (cUser.get.id.toString))
     } catch errorHandling
   }
 
