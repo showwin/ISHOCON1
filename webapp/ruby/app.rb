@@ -49,7 +49,7 @@ class Ishocon1::WebApp < Sinatra::Base
 
     def authenticate(email, password)
       user = db.xquery('SELECT * FROM users WHERE email = ?', email).first
-      fail Ishocon1::AuthenticationError unless user[:password] == password
+      fail Ishocon1::AuthenticationError unless user.nil? == false && user[:password] == password
       session[:user_id] = user[:id]
     end
 
