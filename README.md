@@ -36,6 +36,9 @@ ISUCON5でISUCONに初参戦したのですが、予選を通過できなくて�
   * Crystal実装を追加してくださったお気持ちブログです。必読です！ 
 * [今年もWantedlyの新卒研修で社内ISUCONを行いました！](https://www.wantedly.com/companies/wantedly/post_articles/117958) (by [@kobayang](https://github.com/kobayang))
   * Wantedlyさんの社内ISUCONでISHOCON1を使って頂きました。ベンチマーカーを外に出すのと複数台構成にすると戦略がかなり変わりますね。
+* [ISHOCON1をScalaで書いたお気持ち](https://goryudyuma.hatenablog.jp/entry/2018/06/11/170711)(by [@Goryudyuma](https://twitter.com/Goryudyuma))
+  * Scala実装を追加頂いた時の記事です。 [@Goryudyuma](https://twitter.com/Goryudyuma)さんの記事は毎回気付かされる部分があり、ありがたいです。
+
 
 ## ISHOCONシリーズ
 * [ISHOCON1](https://github.com/showwin/ISHOCON1)
