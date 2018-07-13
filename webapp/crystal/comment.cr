@@ -1,5 +1,5 @@
 class Comment
-  def initialize(@id : Int32, @Productid : Int32, ,@userid : Int32, @content : String, @createdat : Time)
+  def initialize(@id : Int32, @Productid : Int32, @userid : Int32, @content : String, @createdat : Time)
   end
 end
 
