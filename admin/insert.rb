@@ -97,7 +97,7 @@ def insert_histories
   5000.times do |i|
     100.times do |j|
       query = 'INSERT INTO histories (product_id, user_id, created_at) VALUES ' if j == 0
-      product_id = rand(10000)
+      product_id = rand(10000) + 1
       user_id = i + 1
       created_at = time_now
       query << "(#{product_id}, #{user_id}, '#{created_at}'), "
