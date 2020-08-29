@@ -4,12 +4,10 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-03134665
-* Instance Type: c4.xlarge
+* AMI: ami-044fa950c36d5a250
+* Instance Type: c5.xlarge
 * EBS Optimization: なし
 * Root Volume: 8GB, Magnetic
-
-要望があればGCPでもイメージを作成するかもしれません。
 
 参考画像  
 * 8GB, Magnetic を選択してください。
@@ -25,7 +23,7 @@ AWSのイメージのみ作成しました。
 ### インスタンスにログインする
 例:
 ```
-$ ssh -i ~/.ssh/your_private_key.pem ec2-user@xx.xx.xx.xx
+$ ssh -i ~/.ssh/your_private_key.pem ubuntu@xx.xx.xx.xx
 ```
 
 ### ishocon ユーザに切り替える
@@ -37,7 +35,6 @@ $ sudo su - ishocon
 $ ls
  benchmark    #ベンチマーカー
  db_init.sh   #DBの初期化スクリプト(後で説明)
- init         #DB初期化に必要なスクリプト(中身は変更しないでください)
  webapp       #最適化するアプリケーション
 ```
 
@@ -62,19 +59,20 @@ $ go build -o webapp *.go
 $ ./webapp
 ```
 
+#### Scala の場合
+```
+$ cd ~/webapp/scala/ishocon1
+$ sbt
+> ~;jetty:stop;jetty:start
+```
+
 #### Crystal の場合
 ```
+# メンテナンスされておらず動きません
 $ cd ~/webapp/crystal
 $ shards install
 $ crystal build app.cr
 $ ./app
-```
-
-#### Scala の場合
-```
-$ cd ~/webapp/scala
-$ sbt
-> ~;jetty:stop;jetty:start
 ```
 
 これでブラウザからアプリケーションが見れるようになるので、IPアドレスにアクセスしてみましょう。  
@@ -102,9 +100,9 @@ $ ./benchmark --workload 3
 * 並列度が高い場合は1分以上経っても終了しない場合がありますが、スコアには影響ありません。
 
 ## MySQL
-3306 番ポートで MySQL(5.5) が起動しています。初期状態では以下のユーザが設定されています。
+3306 番ポートで MySQL(8.0) が起動しています。初期状態では以下のユーザが設定されています。
 * ユーザ名: ishocon, パスワード: ishocon
-* ユーザ名: root, パスワードなし
+* ユーザ名: root, パスワード: ishocon1
 
 別のバージョンのMySQLに変更することも可能です。  
 その場合、初期データの挿入は

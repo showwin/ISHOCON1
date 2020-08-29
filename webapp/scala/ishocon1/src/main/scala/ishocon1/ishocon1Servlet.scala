@@ -28,13 +28,13 @@ class ishocon1Servlet extends ScalatraServlet with FormSupport with I18nSupport 
   implicit val getCommentWithWriterResult = GetResult(r => CommentWithWriter(Comment(r.nextInt, r.nextInt, r.nextInt, r.nextString, r.nextTimestamp), r.nextString))
 
   val dbType = "mysql"
-  val dbHost = "localhost"
+  val dbHost = sys.env.getOrElse("ISHOCON1_DB_HOST", "localhost")
   val dbPort = 3306
-  val dbUser = sys.env.getOrElse("ISHOCON1_DB_NAME", "ishocon")
-  val dbPassword = sys.env.getOrElse("ISHOCON1_DB_NAME", "ishocon")
+  val dbUser = sys.env.getOrElse("ISHOCON1_DB_USER", "ishocon")
+  val dbPassword = sys.env.getOrElse("ISHOCON1_DB_PASSWORD", "ishocon")
   val dbName = sys.env.getOrElse("ISHOCON1_DB_NAME", "ishocon1")
   val db = Database.forURL(
-    "jdbc:%s://%s:%d/%s?characterEncoding=UTF-8&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC".format(dbType, dbHost, dbPort, dbName),
+    "jdbc:%s://%s:%d/%s?characterEncoding=UTF-8&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true".format(dbType, dbHost, dbPort, dbName),
     driver = "com.mysql.cj.jdbc.Driver",
     user = dbUser,
     password = dbPassword)

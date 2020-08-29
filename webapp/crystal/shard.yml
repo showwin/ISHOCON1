@@ -1,11 +1,11 @@
-name: 
+name:
 version: 0.1.0
 
 # authors:
 #   - name <email@example.com>
 
 # description: |
-#   Short description of 
+#   Short description of
 
 # dependencies:
 #   pg:
@@ -22,6 +22,7 @@ version: 0.1.0
 dependencies:
   mysql:
     github: crystal-lang/crystal-mysql
+    version: 0.8.0
   kemal:
     github: kemalcr/kemal
   kemal-session:

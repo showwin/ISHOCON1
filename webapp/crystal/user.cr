@@ -26,15 +26,15 @@ class User
   end
 
   def buy_product(pid : String)
-    Database.exec "INSERT INTO histories (product_id, user_id, created_at) VALUES (?, ?, ?)", pid, @id, Time.now
+    Database.exec "INSERT INTO histories (product_id, user_id, created_at) VALUES (?, ?, ?)", pid, @id, Time.local
   end
 
   def create_comment(pid : String, content : String)
-    Database.exec "INSERT INTO comments (product_id, user_id, content, created_at) VALUES (?, ?, ?, ?)", pid, @id, content, Time.now
+    Database.exec "INSERT INTO comments (product_id, user_id, content, created_at) VALUES (?, ?, ?, ?)", pid, @id, content, Time.local
   end
 
   def update_last_login
-    Database.exec "UPDATE users SET last_login = ? WHERE id = ?", Time.now, @id
+    Database.exec "UPDATE users SET last_login = ? WHERE id = ?", Time.local, @id
   end
 end
 
