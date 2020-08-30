@@ -4,18 +4,12 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-044fa950c36d5a250
+* AMI: ami-0d00b2a9a38084503
 * Instance Type: c5.xlarge
-* EBS Optimization: なし
-* Root Volume: 8GB, Magnetic
+* EBS-optimized: Yes
+* Root Volume: 8GB, General Purpose SSD (gp2)
 
 参考画像  
-* 8GB, Magnetic を選択してください。
-![](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/instance1.png)
-
-* 途中で以下のように聞かれることがありますが、Magnetic を選択してください。
-![](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/instance2.png)
-
 * Security Groupの設定で `TCP 22 (SSH)` と `TCP 80 (HTTP)` を `Inbound 0.0.0.0/0` からアクセスできるようにしてください。
 ![](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/instance3.png)
 
