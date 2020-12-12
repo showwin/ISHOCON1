@@ -16,7 +16,7 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
 
 ## 問題詳細
 * マニュアル: [ISHOCON1マニュアル](https://github.com/showwin/ISHOCON1/blob/master/doc/manual.md)
-* AMI: `ami-044fa950c36d5a250`
+* AMI: `ami-0d00b2a9a38084503`
 * インスタンスタイプ: `c5.xlarge`
 * 参考実装言語: Ruby, Go, Python, Crystal(by [@Goryudyuma](https://github.com/Goryudyuma)), Scala(by [@Goryudyuma](https://github.com/Goryudyuma))
 * 推奨実施時間: 1人で8時間
