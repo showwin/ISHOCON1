@@ -102,7 +102,10 @@ app.post("/login", async (req, res) => {
     return;
   }
   req.session.uid = user.id;
-  // user.UpdateLastLogin();
+  await query("UPDATE users SET last_login = ? WHERE id = ?", [
+    new Date(),
+    user.id,
+  ]);
 
   res.redirect(303, "/");
 });
