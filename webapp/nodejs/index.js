@@ -64,32 +64,30 @@ async function getProducts(page) {
     "SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET ?",
     page * 50
   );
-  const products = await Promise.all(
-    rows.map(async (row) => {
-      // console.log(row);
-      const cc = await query(
-        "SELECT count(*) as count FROM comments WHERE product_id = ?",
+  const products = [];
+  for (const row of rows) {
+    const cc = await query(
+      "SELECT count(*) as count FROM comments WHERE product_id = ?",
+      row.id
+    );
+    commentsCount = cc[0].count;
+    let comments = []; // fill default
+    if (commentsCount > 0) {
+      const subrows = await query(
+        "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
         row.id
       );
-      commentsCount = cc[0].count;
-      let comments = []; // fill default
-      if (commentsCount > 0) {
-        const subrows = await query(
-          "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
-          row.id
-        );
-        comments = subrows.map((subrow) => ({
-          content: subrow.content,
-          name: subrow.name,
-        }));
-      }
-      return {
-        ...row,
-        comments_count: commentsCount,
-        comments,
-      };
-    })
-  );
+      comments = subrows.map((subrow) => ({
+        content: subrow.content,
+        name: subrow.name,
+      }));
+    }
+    products.push({
+      ...row,
+      comments_count: commentsCount,
+      comments,
+    });
+  }
   return products;
 }
 
