@@ -57,6 +57,40 @@ async function currentUser(req) {
   return await getUser(userId);
 }
 
+async function getProducts(page) {
+  const rows = await query(
+    "SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET ?",
+    page * 50
+  );
+  const products = await Promise.all(
+    rows.map(async (row) => {
+      // console.log(row);
+      const cc = await query(
+        "SELECT count(*) as count FROM comments WHERE product_id = ?",
+        row.id
+      );
+      commentsCount = cc[0].count;
+      let comments = []; // fill default
+      if (commentsCount > 0) {
+        const subrows = await query(
+          "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
+          row.id
+        );
+        comments = subrows.map((subrow) => ({
+          content: subrow.content,
+          name: subrow.name,
+        }));
+      }
+      return {
+        ...row,
+        comments_count: commentsCount,
+        comments,
+      };
+    })
+  );
+  return products;
+}
+
 app.post("/login", async (req, res) => {
   req.session.regenerate(() => {});
 
@@ -91,10 +125,10 @@ app.get("/", async (req, res) => {
   const user = await currentUser(req);
 
   let page = parseInt(req.params.page);
-  if (page === NaN) {
+  if (Number.isNaN(page)) {
     page = 0;
   }
-  const products = []; // TODO
+  const products = await getProducts(page);
   res.render("./index.ejs", { products: products, current_user: user });
 });
 
