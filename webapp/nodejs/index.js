@@ -11,7 +11,12 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(session({ secret: 'showwin_happy', name: 'ishocon1_node_session'}))
+app.use(session({
+     secret: 'showwin_happy',
+      name: 'ishocon1_node_session',
+      resave: false,
+      saveUninitialized: false,
+    }))
 
 const mysql = require('mysql');
 const pool = mysql.createPool({
