@@ -76,6 +76,31 @@ app.get("/initialize", async (_, res) => {
 
 app.get("/", (_, res) => {
   res.send("hello");
+  // TODO implement
+});
+
+app.get("/users/:userId", (req, res) => {
+  userId = parseInt(req.params.userId);
+  // TODO implement
+  res.send(`hello user ${userId}`);
+});
+
+app.get("/products/:productId", (req, res) => {
+  productId = parseInt(req.params.productId);
+  // TODO implement
+  res.send(`product ${productId}`);
+});
+
+app.post("/products/buy/:productId", (req, res) => {
+  productId = parseInt(req.params.productId);
+  // TODO implement
+  res.send(`you bought product ${productId}`);
+});
+
+app.post("/comments/:productId", (req, res) => {
+  productId = parseInt(req.params.productId);
+  // TODO implement
+  res.send(`you commented product ${productId}`);
 });
 
 const server = app.listen(8080, function () {
