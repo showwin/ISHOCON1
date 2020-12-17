@@ -44,6 +44,19 @@ async function authenticate(email, password) {
   return rows[0];
 }
 
+async function getUser(userId) {
+  const rows = await query("SELECT * FROM users WHERE id = ? LIMIT 1", userId);
+  return rows[0];
+}
+
+async function currentUser(req) {
+  const userId = req.session.uid;
+  if (!userId) {
+    return undefined;
+  }
+  return await getUser(userId);
+}
+
 app.post("/login", async (req, res) => {
   req.session.regenerate(() => {});
 
@@ -74,9 +87,15 @@ app.get("/initialize", async (_, res) => {
   res.send("Finish");
 });
 
-app.get("/", (_, res) => {
-  res.send("hello");
-  // TODO implement
+app.get("/", async (req, res) => {
+  const user = await currentUser(req);
+
+  let page = parseInt(req.params.page);
+  if (page === NaN) {
+    page = 0;
+  }
+  const products = []; // TODO
+  res.render("./index.ejs", { products: products, current_user: user });
 });
 
 app.get("/users/:userId", (req, res) => {
