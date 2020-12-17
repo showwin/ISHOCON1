@@ -60,6 +60,12 @@ app.post("/login", async (req, res) => {
   res.redirect(303, "/");
 });
 
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+
+  res.redirect(303, "/login");
+});
+
 app.get("/initialize", async (_, res) => {
   await query("DELETE FROM users WHERE id > 5000");
   await query("DELETE FROM products WHERE id > 10000");
