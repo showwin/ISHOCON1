@@ -84,7 +84,7 @@ async function getProducts(page) {
     }
     products.push({
       ...row,
-      comments_count: commentsCount,
+      commentsCount,
       comments,
     });
   }
