@@ -31,7 +31,7 @@ const pool = mysql.createPool({
 });
 const query = util.promisify(pool.query).bind(pool);
 
-app.get("/login", async (req, res) => {
+app.get("/login", (req, res) => {
   req.session.destroy();
   res.render("./login.ejs", { message: "ECサイトで爆買いしよう！！！！" });
 });
