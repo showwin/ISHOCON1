@@ -71,16 +71,18 @@ async function getProducts(page) {
       row.id
     );
     commentsCount = cc[0].count;
-    let comments = []; // fill default
+    const comments = [];
     if (commentsCount > 0) {
       const subrows = await query(
         "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
         row.id
       );
-      comments = subrows.map((subrow) => ({
-        content: subrow.content,
-        name: subrow.name,
-      }));
+      for (const subrow of subrows) {
+        comments.push({
+          content: subrow.content,
+          name: subrow.name,
+        });
+      }
     }
     products.push({
       ...row,
