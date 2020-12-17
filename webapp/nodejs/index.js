@@ -36,9 +36,9 @@ app.get('/', (_, res) => {
     res.send('hello')
 })
 
-var server = app.listen(8080, function () {
-    var host = server.address().address;
-    var port = server.address().port;
+const server = app.listen(8080, function () {
+    const host = server.address().address;
+    const port = server.address().port;
 
     console.log('Example app listening at http://%s:%s', host, port);
 });
