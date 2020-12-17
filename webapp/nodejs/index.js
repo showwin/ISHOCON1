@@ -36,6 +36,30 @@ app.get("/login", (req, res) => {
   res.render("./login.ejs", { message: "ECサイトで爆買いしよう！！！！" });
 });
 
+async function authenticate(email, password) {
+  const rows = await query("SELECT * FROM users WHERE email = ?", email);
+  if (!rows[0] || rows[0].password !== password) {
+    throw new Error("user not found");
+  }
+  return rows[0];
+}
+
+app.post("/login", async (req, res) => {
+  req.session.regenerate(() => {});
+
+  let user;
+  try {
+    user = await authenticate(req.body.email, req.body.password);
+  } catch (e) {
+    res.render("./login.ejs", { message: "ログインに失敗しました" });
+    return;
+  }
+  req.session.uid = user.id;
+  // user.UpdateLastLogin();
+
+  res.redirect(303, "/");
+});
+
 app.get("/initialize", async (_, res) => {
   await query("DELETE FROM users WHERE id > 5000");
   await query("DELETE FROM products WHERE id > 10000");
