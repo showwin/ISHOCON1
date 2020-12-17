@@ -3,12 +3,14 @@ const util = require("util");
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+const morgan = require("morgan");
 
 const app = express();
 
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(morgan("tiny"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
