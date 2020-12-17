@@ -1,0 +1,17 @@
+<div class="jumbotron">
+  <div class="container">
+    <h2><%= product[:name] %></h2>
+    <% if already_bought?(product[:id]) %><h4>あなたはすでにこの商品を買っています</h4><% end %>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="jumbotron">
+      <img src="<%= product[:image_path] %>" class="img-responsive" width="400"/>
+      <h2>価格</h2>
+      <p><%= product[:price] %> 円</p>
+      <h2>商品説明</h2>
+      <p><%= product[:description] %></p>
+    </div>
+  </div>
+</div>

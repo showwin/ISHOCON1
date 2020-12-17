@@ -24,6 +24,11 @@ const pool = mysql.createPool({
 });
 const query = util.promisify(pool.query).bind(pool);
 
+app.get('/login', async (req, res) => {
+    req.session.destroy();
+    res.render("./login.ejs", {message: "ECサイトで爆買いしよう！！！！"})
+})
+
 app.get('/initialize', async (_, res) => {
     await query('DELETE FROM users WHERE id > 5000');
     await query('DELETE FROM products WHERE id > 10000');
