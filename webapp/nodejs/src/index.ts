@@ -1,9 +1,10 @@
-const util = require("util");
-
-const express = require("express");
-const session = require("express-session");
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
+import mysql from "mysql";
+import util from "util";
+import express from "express";
+import session from "express-session";
+import bodyParser from "body-parser";
+import morgan from "morgan";
+import { AddressInfo } from "net";
 
 const app = express();
 
@@ -22,24 +23,30 @@ app.use(
   })
 );
 
-const mysql = require("mysql");
 const pool = mysql.createPool({
   connectionLimit: 20,
   host: process.env.ISHOCON1_DB_HOST || "localhost", // not supported in other implementations
-  port: process.env.ISHOCON1_DB_PORT || 3306, // not supported in other implementations
+  port: parseInt(process.env.ISHOCON1_DB_PORT ?? "3306"), // not supported in other implementations
   user: process.env.ISHOCON1_DB_USER || "ishocon",
   password: process.env.ISHOCON1_DB_PASSWORD || "ishocon",
   database: process.env.ISHOCON1_DB_NAME || "ishocon1",
 });
-const query = util.promisify(pool.query).bind(pool);
+const query = util.promisify(pool.query.bind(pool));
 
 app.get("/login", (req, res) => {
-  req.session.destroy();
+  req.session.destroy(() => {});
   res.render("./login.ejs", { message: "ECサイトで爆買いしよう！！！！" });
 });
 
-async function authenticate(email, password) {
-  const rows = await query("SELECT * FROM users WHERE email = ?", email);
+type User = {
+  password: string;
+  // TODO
+};
+async function authenticate(email: string, password: string) {
+  const rows = (await query({
+    sql: "SELECT * FROM users WHERE email = ?",
+    values: [email],
+  })) as User[];
   if (!rows[0] || rows[0].password !== password) {
     throw new Error("user not found");
   }
@@ -47,7 +54,10 @@ async function authenticate(email, password) {
 }
 
 async function getUser(userId) {
-  const rows = await query("SELECT * FROM users WHERE id = ? LIMIT 1", userId);
+  const rows = (await query({
+    sql: "SELECT * FROM users WHERE id = ? LIMIT 1",
+    values: [userId],
+  })) as User[];
   return rows[0];
 }
 
@@ -59,24 +69,38 @@ async function currentUser(req) {
   return await getUser(userId);
 }
 
+type ProductRow = {
+  id: string;
+  // TODO
+};
+type Product = {
+  id: string;
+  commentsCount: number;
+  comments: Comment[];
+};
+type Comment = {
+  name: string;
+  content: string;
+};
 async function getProducts(page) {
-  const rows = await query(
-    "SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET ?",
-    page * 50
-  );
-  const products: any[] = [];
+  const rows = (await query({
+    sql: "SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET ?",
+    values: [page * 50],
+  })) as ProductRow[];
+  const products: Product[] = [];
   for (const row of rows) {
-    const cc = await query(
-      "SELECT count(*) as count FROM comments WHERE product_id = ?",
-      row.id
-    );
+    const cc = (await query({
+      sql: "SELECT count(*) as count FROM comments WHERE product_id = ?",
+      values: [row.id],
+    })) as { count: number }[];
     const commentsCount = cc[0].count;
-    const comments: any[] = [];
+    const comments: Comment[] = [];
     if (commentsCount > 0) {
-      const subrows = await query(
-        "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
-        row.id
-      );
+      const subrows = (await query({
+        sql:
+          "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
+        values: [row.id],
+      })) as Comment[];
       for (const subrow of subrows) {
         comments.push({
           content: subrow.content,
@@ -103,17 +127,17 @@ app.post("/login", async (req, res) => {
     res.render("./login.ejs", { message: "ログインに失敗しました" });
     return;
   }
-  req.session.uid = user.id;
-  await query("UPDATE users SET last_login = ? WHERE id = ?", [
-    new Date(),
-    user.id,
-  ]);
+  req.session["uid"] = user.id;
+  await query({
+    sql: "UPDATE users SET last_login = ? WHERE id = ?",
+    values: [new Date(), user.id],
+  });
 
   res.redirect(303, "/");
 });
 
 app.get("/logout", (req, res) => {
-  req.session.destroy();
+  req.session.destroy(() => {});
 
   res.redirect(303, "/login");
 });
@@ -162,8 +186,9 @@ app.post("/comments/:productId", (req, res) => {
 });
 
 const server = app.listen(8080, function () {
-  const host = server.address().address;
-  const port = server.address().port;
+  const address = server.address() as AddressInfo;
+  const host = address.address;
+  const port = address.port;
 
   console.log("Example app listening at http://%s:%s", host, port);
 });
