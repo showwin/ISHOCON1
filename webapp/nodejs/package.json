@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "clean": "rm -rf ./dist/*",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/index.js",
     "build": "tsc"
