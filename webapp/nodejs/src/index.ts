@@ -64,14 +64,14 @@ async function getProducts(page) {
     "SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET ?",
     page * 50
   );
-  const products = [];
+  const products: any[] = [];
   for (const row of rows) {
     const cc = await query(
       "SELECT count(*) as count FROM comments WHERE product_id = ?",
       row.id
     );
     const commentsCount = cc[0].count;
-    const comments = [];
+    const comments: any[] = [];
     if (commentsCount > 0) {
       const subrows = await query(
         "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
@@ -138,25 +138,25 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/users/:userId", (req, res) => {
-  userId = parseInt(req.params.userId);
+  const userId = parseInt(req.params.userId);
   // TODO implement
   res.send(`hello user ${userId}`);
 });
 
 app.get("/products/:productId", (req, res) => {
-  productId = parseInt(req.params.productId);
+  const productId = parseInt(req.params.productId);
   // TODO implement
   res.send(`product ${productId}`);
 });
 
 app.post("/products/buy/:productId", (req, res) => {
-  productId = parseInt(req.params.productId);
+  const productId = parseInt(req.params.productId);
   // TODO implement
   res.send(`you bought product ${productId}`);
 });
 
 app.post("/comments/:productId", (req, res) => {
-  productId = parseInt(req.params.productId);
+  const productId = parseInt(req.params.productId);
   // TODO implement
   res.send(`you commented product ${productId}`);
 });
