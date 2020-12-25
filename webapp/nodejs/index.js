@@ -70,7 +70,7 @@ async function getProducts(page) {
       "SELECT count(*) as count FROM comments WHERE product_id = ?",
       row.id
     );
-    commentsCount = cc[0].count;
+    const commentsCount = cc[0].count;
     const comments = [];
     if (commentsCount > 0) {
       const subrows = await query(
