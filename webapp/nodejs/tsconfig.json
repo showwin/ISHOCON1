@@ -9,7 +9,6 @@
     "allowJs": true,
     "outDir": "dist"
   },
-  "include": ["**/*.js", "**/*.ts"],
-  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*.js", "src/**/*.ts"],
   "$schema": "https://json.schemastore.org/tsconfig"
 }
