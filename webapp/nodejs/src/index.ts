@@ -40,7 +40,7 @@ app.get("/login", (req, res) => {
 
 type User = {
   password: string;
-  // TODO
+  // there're other fields used in views. see views/*.ejs
 };
 async function authenticate(email: string, password: string) {
   const rows = (await query({
@@ -71,10 +71,9 @@ async function currentUser(req) {
 
 type ProductRow = {
   id: string;
-  // TODO
+  // there're other fields used in views. see views/*.ejs
 };
-type Product = {
-  id: string;
+type Product = ProductRow & {
   commentsCount: number;
   comments: Comment[];
 };
