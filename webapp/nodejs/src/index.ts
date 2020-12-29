@@ -76,6 +76,29 @@ async function currentUser(req: express.Request) {
   return await getUser(userId);
 }
 
+type ProductHistory = {
+  // same as ProductRow
+  id: string;
+  name: string;
+  description: string;
+  image_path: string;
+  price: number;
+  // history
+  created_at: Date;
+};
+async function buyingHistory(user: User) {
+  return (await query({
+    sql:
+      "SELECT p.id, p.name, p.description, p.image_path, p.price, h.created_at " +
+      "FROM histories as h " +
+      "LEFT OUTER JOIN products as p " +
+      "ON h.product_id = p.id " +
+      "WHERE h.user_id = ? " +
+      "ORDER BY h.id DESC",
+    values: [user.id],
+  })) as ProductHistory[];
+}
+
 type ProductRow = {
   id: string;
   // there're other fields used in views. see views/*.ejs
@@ -167,10 +190,39 @@ app.get("/", async (req, res) => {
   res.render("./index.ejs", { products: products, current_user: user });
 });
 
-app.get("/users/:userId", (req, res) => {
-  const userId = parseInt(req.params.userId);
-  // TODO implement
-  res.send(`hello user ${userId}`);
+app.get("/users/:userId", async (req, res) => {
+  type ProductHistoryWithStringCreatedAt = {
+    // same as ProductRow
+    id: string;
+    name: string;
+    description: string;
+    image_path: string;
+    price: number;
+    // history
+    created_at: string;
+  };
+
+  const cUser = await currentUser(req);
+  const user = await getUser(req.params.userId);
+  const products = (await buyingHistory(user)).map((p) => {
+    // to format as "2006-01-02 15:04:05" in JST
+    const created_at = new Date(p.created_at.getTime() + 9 * 3600 * 1000)
+      .toISOString()
+      .replace("T", " ")
+      .replace(/\.\d+Z/, "");
+    return { ...p, created_at: created_at };
+  });
+
+  let totalPay = 0;
+  products.forEach((p) => {
+    totalPay += p.price;
+  });
+  res.render("./mypage.ejs", {
+    user: user,
+    products: products,
+    current_user: cUser,
+    totalPay: totalPay,
+  });
 });
 
 app.get("/products/:productId", (req, res) => {

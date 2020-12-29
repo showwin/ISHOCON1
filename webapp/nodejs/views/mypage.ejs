@@ -1,30 +1,31 @@
+<%- include('header'); -%>
 <div class="jumbotron">
   <div class="container">
-    <h2><%= user[:name] %> さんの購入履歴</h2>
-    <h4>合計金額: <%= total_pay %>円</h4>
+    <h2><%= user.name %> さんの購入履歴</h2>
+    <h4>合計金額: <%= totalPay %>円</h4>
   </div>
 </div>
 <div class="container">
   <div class="row">
-    <% products.each_with_index do |product, index| %>
-      <% break if index >= 30 %>
+    <% products.forEach((product, index) => { %>
+      <% if (index >= 30) { return; } %>
       <div class="col-md-4">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <a href="/products/<%= product[:id] %>"><%= product[:name] %></a>
+            <a href="/products/<%= product.id %>"><%= product.name %></a>
           </div>
           <div class="panel-body">
-            <a href="/products/<%= product[:id] %>"><img src="<%= product[:image_path] %>" class="img-responsive" /></a>
+            <a href="/products/<%= product.id %>"><img src="<%= product.image_path %>" class="img-responsive" /></a>
             <h4>価格</h4>
-            <p><%= product[:price] %>円</p>
+            <p><%= product.price %>円</p>
             <h4>商品説明</h4>
-            <p><%= product[:description][0..69] %>…</p>
+            <p><%= product.description.substr(0,69) %>…</p>
             <h4>購入日時</h4>
-            <p><%= (product[:created_at]+9*60*60).strftime("%Y-%m-%d %H:%M:%S") %></p>
+            <p><%= product.created_at %></p>
           </div>
-          <% if current_user && user[:id] == current_user[:id] %>
+          <% if (current_user && user.id === current_user.id) { %>
             <div class="panel-footer">
-              <form method="POST" action="/comments/<%= product[:id] %>">
+              <form method="POST" action="/comments/<%= product.id %>">
                 <fieldset>
                   <div class="form-group">
                     <input class="form-control" placeholder="Comment Here" name="content" value="">
@@ -33,9 +34,10 @@
                 </fieldset>
               </form>
             </div>
-          <% end %>
+          <% } %>
         </div>
       </div>
-    <% end %>
+    <% }); %>
   </div>
 </div>
+<%- include('footer'); -%>
