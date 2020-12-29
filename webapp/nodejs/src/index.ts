@@ -39,6 +39,7 @@ app.get("/login", (req, res) => {
 });
 
 type User = {
+  id: string;
   password: string;
   // there're other fields used in views. see views/*.ejs
 };
@@ -119,7 +120,7 @@ async function getProducts(page) {
 app.post("/login", async (req, res) => {
   req.session.regenerate(() => {});
 
-  let user;
+  let user: User | undefined;
   try {
     user = await authenticate(req.body.email, req.body.password);
   } catch (e) {
