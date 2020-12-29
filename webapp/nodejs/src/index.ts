@@ -230,7 +230,9 @@ app.get("/initialize", async (_, res) => {
 app.get("/", async (req, res) => {
   const user = await currentUser(req);
 
-  let page = parseInt(req.params.page);
+  let page = parseInt(
+    typeof req.query.page === "string" ? req.query.page : "never"
+  );
   if (Number.isNaN(page)) {
     page = 0;
   }
