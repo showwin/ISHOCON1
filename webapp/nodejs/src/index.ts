@@ -174,6 +174,14 @@ async function isBought(productId: string, userId: string) {
   return cc[0].count > 0;
 }
 
+async function buyProduct(productId: string, userId: string) {
+  await query({
+    sql:
+      "INSERT INTO histories (product_id, user_id, created_at) VALUES (?, ?, ?)",
+    values: [productId, userId, new Date()],
+  });
+}
+
 app.post("/login", async (req, res) => {
   req.session.regenerate(() => {});
 
@@ -267,10 +275,13 @@ app.get("/products/:productId", async (req, res) => {
   });
 });
 
-app.post("/products/buy/:productId", (req, res) => {
-  const productId = parseInt(req.params.productId);
-  // TODO implement
-  res.send(`you bought product ${productId}`);
+app.post("/products/buy/:productId", async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) {
+    return res.render("./login.ejs", { message: "先にログインをしてください" });
+  }
+  await buyProduct(req.params.productId, user.id);
+  res.redirect(303, `/users/${user.id}`);
 });
 
 app.post("/comments/:productId", (req, res) => {
