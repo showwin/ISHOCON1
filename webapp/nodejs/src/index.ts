@@ -38,6 +38,12 @@ app.get("/login", (req, res) => {
   res.render("./login.ejs", { message: "ECサイトで爆買いしよう！！！！" });
 });
 
+declare module "express-session" {
+  interface SessionData {
+    uid: string;
+  }
+}
+
 type User = {
   id: string;
   password: string;
@@ -54,7 +60,7 @@ async function authenticate(email: string, password: string) {
   return rows[0];
 }
 
-async function getUser(userId) {
+async function getUser(userId: string) {
   const rows = (await query({
     sql: "SELECT * FROM users WHERE id = ? LIMIT 1",
     values: [userId],
@@ -62,7 +68,7 @@ async function getUser(userId) {
   return rows[0];
 }
 
-async function currentUser(req) {
+async function currentUser(req: express.Request) {
   const userId = req.session.uid;
   if (!userId) {
     return undefined;
@@ -82,7 +88,7 @@ type Comment = {
   name: string;
   content: string;
 };
-async function getProducts(page) {
+async function getProducts(page: number) {
   const rows = (await query({
     sql: "SELECT * FROM products ORDER BY id DESC LIMIT 50 OFFSET ?",
     values: [page * 50],
@@ -127,7 +133,7 @@ app.post("/login", async (req, res) => {
     res.render("./login.ejs", { message: "ログインに失敗しました" });
     return;
   }
-  req.session["uid"] = user.id;
+  req.session.uid = user.id;
   await query({
     sql: "UPDATE users SET last_login = ? WHERE id = ?",
     values: [new Date(), user.id],

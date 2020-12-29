@@ -7,8 +7,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "outDir": "dist",
-    "noImplicitAny": false
+    "outDir": "dist"
   },
   "include": ["src/**/*.js", "src/**/*.ts"],
   "$schema": "https://json.schemastore.org/tsconfig"
