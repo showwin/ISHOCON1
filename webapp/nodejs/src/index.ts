@@ -182,6 +182,18 @@ async function buyProduct(productId: string, userId: string) {
   });
 }
 
+async function createComment(
+  productId: string,
+  userId: string,
+  content: string
+) {
+  await query({
+    sql:
+      "INSERT INTO comments (product_id, user_id, content, created_at) VALUES (?, ?, ?, ?)",
+    values: [productId, userId, content, new Date()],
+  });
+}
+
 app.post("/login", async (req, res) => {
   req.session.regenerate(() => {});
 
@@ -284,10 +296,13 @@ app.post("/products/buy/:productId", async (req, res) => {
   res.redirect(303, `/users/${user.id}`);
 });
 
-app.post("/comments/:productId", (req, res) => {
-  const productId = parseInt(req.params.productId);
-  // TODO implement
-  res.send(`you commented product ${productId}`);
+app.post("/comments/:productId", async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) {
+    return res.render("./login.ejs", { message: "先にログインをしてください" });
+  }
+  await createComment(req.params.productId, user.id, req.body.content);
+  res.redirect(303, `/users/${user.id}`);
 });
 
 const server = app.listen(8080, function () {
