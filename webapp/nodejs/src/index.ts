@@ -5,6 +5,7 @@ import session from "express-session";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import { AddressInfo } from "net";
+import { stringify } from "querystring";
 
 const app = express();
 
@@ -105,11 +106,10 @@ type ProductRow = {
 };
 type Product = ProductRow & {
   commentsCount: number;
-  comments: Comment[];
-};
-type Comment = {
-  name: string;
-  content: string;
+  comments: {
+    name: string;
+    content: string;
+  }[];
 };
 async function getProducts(page: number) {
   const rows = (await query({
@@ -123,13 +123,13 @@ async function getProducts(page: number) {
       values: [row.id],
     })) as { count: number }[];
     const commentsCount = cc[0].count;
-    const comments: Comment[] = [];
+    const comments: Product["comments"] = [];
     if (commentsCount > 0) {
       const subrows = (await query({
         sql:
           "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
         values: [row.id],
-      })) as Comment[];
+      })) as Product["comments"];
       for (const subrow of subrows) {
         comments.push({
           content: subrow.content,
@@ -144,6 +144,34 @@ async function getProducts(page: number) {
     });
   }
   return products;
+}
+
+async function getProduct(productId: string) {
+  const rows = (await query({
+    sql: "SELECT * FROM products WHERE id = ? LIMIT 1",
+    values: [productId],
+  })) as ProductRow[];
+  return rows[0];
+}
+
+type Comment = {
+  // has more fields used in view
+};
+async function getComments(productId: string) {
+  const rows = (await query({
+    sql: "SELECT * FROM comments WHERE product_id = ?",
+    values: [productId],
+  })) as Comment[];
+  return rows[0];
+}
+
+async function isBought(productId: string, userId: string) {
+  const cc = (await query({
+    sql:
+      "SELECT count(*) as count FROM histories WHERE product_id = ? AND user_id = ?",
+    values: [productId, userId],
+  })) as { count: number }[];
+  return cc[0].count > 0;
 }
 
 app.post("/login", async (req, res) => {
@@ -225,10 +253,18 @@ app.get("/users/:userId", async (req, res) => {
   });
 });
 
-app.get("/products/:productId", (req, res) => {
-  const productId = parseInt(req.params.productId);
-  // TODO implement
-  res.send(`product ${productId}`);
+app.get("/products/:productId", async (req, res) => {
+  const productId = req.params.productId;
+  const product = await getProduct(productId);
+  const comments = await getComments(productId);
+  const user = await currentUser(req);
+  const bought = user ? await isBought(productId, user.id) : false;
+  res.render("./product.ejs", {
+    current_user: user,
+    product: product,
+    comments: comments,
+    already_bought: bought,
+  });
 });
 
 app.post("/products/buy/:productId", (req, res) => {
