@@ -60,6 +60,13 @@ $ sbt
 > ~;jetty:stop;jetty:start
 ```
 
+### Node.js の場合
+```
+$ cd ~/webapp/nodejs/ 
+$ npm install
+$ npm start
+```
+
 #### Crystal の場合
 ```
 # メンテナンスされておらず動きません
