@@ -60,9 +60,10 @@ $ sbt
 > ~;jetty:stop;jetty:start
 ```
 
-### Node.js の場合
+#### Node.js (TypeSript) の場合
 ```
-$ cd ~/webapp/nodejs/ 
+# TypeScript で書かれています
+$ cd ~/webapp/nodejs/
 $ npm install
 $ npm start
 ```
