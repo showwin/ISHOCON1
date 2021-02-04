@@ -123,20 +123,21 @@ async function getProducts(page: number) {
       values: [row.id],
     })) as { count: number }[];
     const commentsCount = cc[0].count;
+
+    // retrieve comments
     const comments: Product["comments"] = [];
-    if (commentsCount > 0) {
-      const subrows = (await query({
-        sql:
-          "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
-        values: [row.id],
-      })) as Product["comments"];
-      for (const subrow of subrows) {
-        comments.push({
-          content: subrow.content,
-          name: subrow.name,
-        });
-      }
+    const subrows = (await query({
+      sql:
+        "SELECT * FROM comments as c INNER JOIN users as u ON c.user_id = u.id WHERE c.product_id = ? ORDER BY c.created_at DESC LIMIT 5",
+      values: [row.id],
+    })) as Product["comments"];
+    for (const subrow of subrows) {
+      comments.push({
+        content: subrow.content,
+        name: subrow.name,
+      });
     }
+
     products.push({
       ...row,
       commentsCount,
