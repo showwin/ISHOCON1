@@ -60,6 +60,34 @@ $ sbt
 > ~;jetty:stop;jetty:start
 ```
 
+#### Node.js (TypeScript) の場合
+```
+$ cd ~/webapp/nodejs/
+$ npm install
+$ npm start
+```
+
+TypeScript で書かれています。
+
+`~/webapp/nodejs/dist/` 以下に生成された JavaScript ファイルを直接編集する場合は、 `npm start` する前に `package.json` から TypeScript のコンパイル処理を取り除いて下さい。
+
+```diff
+diff --git a/webapp/nodejs/package.json b/webapp/nodejs/package.json
+index eb5e600..600ba5e 100644
+--- a/webapp/nodejs/package.json
++++ b/webapp/nodejs/package.json
+@@ -7,7 +7,7 @@
+   "scripts": {
+     "clean": "rm -rf ./dist/*",
+     "test": "echo \"Error: no test specified\" && exit 1",
+-    "start": "tsc && node dist/index.js",
++    "start": "node dist/index.js",
+     "build": "tsc"
+   },
+   "keywords": [
+```
+
+
 #### Crystal の場合
 ```
 # メンテナンスされておらず動きません
