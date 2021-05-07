@@ -19,10 +19,11 @@ $ aws configure --profile ishocon1
 
 ### admins, playersの皆さんに、SSHの鍵を登録してもらう
 
+admins, playersの皆さん各自のPCで、
 ```shell
 $ ssh -T git@github.com
 ```
-で、自分のGitHubのアカウントIDが表示されることを各自に確認してもらう
+自分のGitHubのアカウントIDが表示されることを確認してもらう
 
 ### stateファイルを入れるS3を作成
 
@@ -42,7 +43,7 @@ $ ssh -T git@github.com
 ## 注意点
 
 - spot instanceで立てるようにしてコストの削減を図っています
-  - main.tfの `aws_spot_instance_request` を `aws_instance` に変えた上で、適宜修正をお願いします
+  - コンテスト中に絶対に落ちて欲しくない場合など、spot instanceを使わない場合、main.tfの `aws_spot_instance_request` を `aws_instance` に変えた上で、必要に応じて適宜修正をお願いします
 - デフォルトでは、 `c5.xlarge` でインスタンスが立ちます
   - 大きすぎる、小さすぎるなどがあれば、適宜直してください
 - playerは増やしたり減らしたりできます
