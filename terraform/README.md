@@ -19,29 +19,33 @@ terraformでISHOCON1の環境が構築できます。
 $ aws configure --profile ishocon1
 ```
 
-### 2. adminsとplayersに、GitHubにてSSHの鍵を登録してもらう
+### 2. adminsとplayersに、GitHubにて秘密鍵を登録してもらう
 
-登録後、各自のPCで以下のコマンドを実行し自身のGitHubのアカウントIDが表示されることを確認する。
+playerはコンテストで使用するインスタンスにログインするために、GitHubに登録されている秘密鍵を使用する。  
+GitHubにて秘密鍵を登録後、各自のPCで以下のコマンドを実行し自身のGitHubのアカウントIDが表示されることを確認する。
 
 ```shell
 $ ssh -T git@github.com
 ```
 
 ### 3. stateファイルを入れるS3バケットを作成
-tfstateの管理をローカルで行う場合には、作成不要です。
+tfstateの管理をローカルで行う場合には、作成不要。
 
 ### 4. FIXMEを直す
 
 - [ ] terraform.tfの中のbucketに、先ほど作成したS3のbucket nameを入れる
   - ローカルでtfstateを管理し、S3を使わない場合にはterraform.tfを削除する
-- [ ] users.tfにadmins, playersのGitHub アカウントIDを入れる
-  - SSHの鍵が登録されたgithubアカウントIDを入れること
-    - [ドキュメント](https://docs.github.com/ja/github/authenticating-to-github/connecting-to-github-with-ssh)を参照のこと
-  - adminsは全インスタンスに入れるユーザー
+- [ ] users.tfにadmins, playersのGitHubアカウントIDを入れる
+  - 詳細は[ドキュメント](https://docs.github.com/ja/github/authenticating-to-github/connecting-to-github-with-ssh)を参照のこと
+  - adminsは全インスタンスに入ることができる
     
 ### 5. terraform apply してリソースの作成
 
-- outputに競技で使用するインスタンスのIPアドレスが入っているので、playerの人に渡す
+```shell
+$ terraform apply
+```
+
+outputに競技で使用するインスタンスのIPアドレスが入っているので、playerの人に渡す。
 
 ## 注意点
 
