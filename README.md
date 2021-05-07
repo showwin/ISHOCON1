@@ -21,6 +21,11 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
 * 参考実装言語: Ruby, Go, Python, Crystal(by [@Goryudyuma](https://github.com/Goryudyuma)), Scala(by [@Goryudyuma](https://github.com/Goryudyuma))
 * 推奨実施時間: 1人で8時間
 
+## 社内ISUCON等のイベントで使用したい方
+自由に使って頂いて構いません。  
+イベント実施後にブログを書いて [@showwin](https://github.com/showwin) まで連絡頂けたら嬉しいです！下のリンクに掲載いたします。  
+サーバーの準備には terraform を使うと便利です。詳しくは [terraform の README](https://github.com/showwin/ISHOCON1/blob/master/terraform/README.md) を参照してください。
+
 ## 関連リンク
 
 * [ISUCON5予選と自作ISUCON](http://blog.mmmcorp.co.jp/blog/2015/10/06/isucon5_and_ishocon/) (by [@showwin](https://twitter.com/showwin))   
@@ -45,6 +50,8 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
   * Wantedlyさんの社内ISUCONでISHOCON1を使って頂きました。ベンチマーカーを外に出すのと複数台構成にすると戦略がかなり変わりますね。
 * [ISHOCON1をScalaで書いたお気持ち](https://goryudyuma.hatenablog.jp/entry/2018/06/11/170711)(by [@Goryudyuma](https://twitter.com/Goryudyuma))
   * Scala実装を追加頂いた時の記事です。 [@Goryudyuma](https://twitter.com/Goryudyuma)さんの記事は毎回気付かされる部分があり、ありがたいです。
+* [エンジニア新人研修の一環で株式会社はてな社内ISUCONを開催しました](https://developer.hatenastaff.com/entry/2021/03/12/103000)(by [@astj](https://github.com/astj))
+  * はてなさんの新人研修でISHOCON1を使って頂きました。コンテスト後にきちんと振り返り時間を設けているのが良いなと思いました！
 
 
 ## ISHOCONシリーズ
