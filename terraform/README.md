@@ -2,52 +2,51 @@
 
 ## 概要
 
-terraformでISHOCON1の環境を構築できます。
+terraformでISHOCON1の環境が構築できます。  
+社内ISUCON等のコンテストの開催準備として使うと便利です。  
+開催者(以下admins)と参加者(以下players)のロールに分けて、サーバーを複数台準備できます。
 
 ## 必要なもの
 
 - 支払情報が紐付けされたAWSアカウント
-- IAMアカウントのアクセスIDとシークレットアクセスキー
+- IAMユーザのアクセスIDとシークレットアクセスキー
 
 ## 手順
 
-### AWSアカウントの登録
+### 1. AWSアカウントの登録
 
 ```shell
 $ aws configure --profile ishocon1
 ```
 
-### admins, playersの皆さんに、SSHの鍵を登録してもらう
+### 2. adminsとplayersに、GitHubにてSSHの鍵を登録してもらう
 
-admins, playersの皆さん各自のPCで、
+登録後、各自のPCで以下のコマンドを実行し自身のGitHubのアカウントIDが表示されることを確認する。
+
 ```shell
 $ ssh -T git@github.com
 ```
-自分のGitHubのアカウントIDが表示されることを確認してもらう
 
-### stateファイルを入れるS3を作成
+### 3. stateファイルを入れるS3バケットを作成
+tfstateの管理をローカルで行う場合には、作成不要です。
 
-### FIXMEを直す
+### 4. FIXMEを直す
 
 - [ ] terraform.tfの中のbucketに、先ほど作成したS3のbucket nameを入れる
-  - ローカルでtfstateを管理し、S3を使わない場合、terraform.tfを削除する
-- [ ] users.tfにadmins, playersを入れる
+  - ローカルでtfstateを管理し、S3を使わない場合にはterraform.tfを削除する
+- [ ] users.tfにadmins, playersのGitHub アカウントIDを入れる
   - SSHの鍵が登録されたgithubアカウントIDを入れること
     - [ドキュメント](https://docs.github.com/ja/github/authenticating-to-github/connecting-to-github-with-ssh)を参照のこと
   - adminsは全インスタンスに入れるユーザー
     
-### terraform apply
+### 5. terraform apply してリソースの作成
 
-- outputにIPアドレスが入っているので、playerの人に渡す
+- outputに競技で使用するインスタンスのIPアドレスが入っているので、playerの人に渡す
 
 ## 注意点
 
 - spot instanceで立てるようにしてコストの削減を図っています
-  - コンテスト中に絶対に落ちて欲しくない場合など、spot instanceを使わない場合、main.tfの `aws_spot_instance_request` を `aws_instance` に変えた上で、必要に応じて適宜修正をお願いします
-- デフォルトでは、 `c5.xlarge` でインスタンスが立ちます
-  - 大きすぎる、小さすぎるなどがあれば、適宜直してください
-- playerは増やしたり減らしたりできます
-  - adminは増やすことも減らすこともできません
-- 動かなくても保証はしませんし、使用したことによる責任は一切取りません
-  - VPCから作るので、安全だとは思いますが、コードをよく読んだ上で、自己責任でご使用ください
-- PRは大歓迎です
+  - コンテスト中に絶対に落ちて欲しくないなどの理由により spot instanceを使わない場合、main.tfの `aws_spot_instance_request` を `aws_instance` に変えてください
+- デフォルトでは、ISHOCON1の推奨インスタンスタイプである `c5.xlarge` でインスタンスが起動します
+- このterraformを使用することで発生した問題に対して責任は一切取りません
+  - コードをよく読んだ上で、自己責任でご使用ください
