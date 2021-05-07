@@ -21,6 +21,11 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
 * 参考実装言語: Ruby, Go, Python, Crystal(by [@Goryudyuma](https://github.com/Goryudyuma)), Scala(by [@Goryudyuma](https://github.com/Goryudyuma))
 * 推奨実施時間: 1人で8時間
 
+## 社内ISUCON等のイベントで使用したい方
+自由に使って頂いて構いません。  
+イベント実施後にブログを書いて [@showwin](https://github.com/showwin) まで連絡頂けたら嬉しいです！下のリンクに掲載いたします。  
+サーバーの準備には terraform を使うと便利です。詳しくは [terraform の README](https://github.com/showwin/ISHOCON1/blob/master/terraform/README.md) を参照してください。
+
 ## 関連リンク
 
 * [ISUCON5予選と自作ISUCON](http://blog.mmmcorp.co.jp/blog/2015/10/06/isucon5_and_ishocon/) (by [@showwin](https://twitter.com/showwin))   
