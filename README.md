@@ -50,6 +50,8 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
   * Wantedlyさんの社内ISUCONでISHOCON1を使って頂きました。ベンチマーカーを外に出すのと複数台構成にすると戦略がかなり変わりますね。
 * [ISHOCON1をScalaで書いたお気持ち](https://goryudyuma.hatenablog.jp/entry/2018/06/11/170711)(by [@Goryudyuma](https://twitter.com/Goryudyuma))
   * Scala実装を追加頂いた時の記事です。 [@Goryudyuma](https://twitter.com/Goryudyuma)さんの記事は毎回気付かされる部分があり、ありがたいです。
+* [エンジニア新人研修の一環で株式会社はてな社内ISUCONを開催しました](https://developer.hatenastaff.com/entry/2021/03/12/103000)(by [@astj](https://github.com/astj))
+  * はてなさんの新人研修でISHOCON1を使って頂きました。コンテスト後にきちんと振り返り時間を設けているのが良いなと思いました！
 
 
 ## ISHOCONシリーズ
