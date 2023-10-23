@@ -11,6 +11,7 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
 
 ## 問題概要
 今回のテーマは「爆買いECサイト」です。
+
 近年某国の方々が日本に来て、爆買いをしているようなので、ECサイトもそれに負けずより多くのレスポンスを返せるようにチューニングしましょう。
 ![](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/top.png)
 
@@ -23,7 +24,9 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
 
 ## 社内ISUCON等のイベントで使用したい方
 自由に使って頂いて構いません。
+
 イベント実施後にブログを書いて [@showwin](https://twitter.com/showwin) まで連絡頂けたら嬉しいです！下の関連リンクに掲載いたします。
+
 サーバーの準備には terraform を使うと便利です。詳しくは [terraform の README](https://github.com/showwin/ISHOCON1/blob/master/terraform/README.md) を参照してください。
 
 ## 関連リンク
