@@ -53,7 +53,7 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
 * [エンジニア新人研修の一環で株式会社はてな社内ISUCONを開催しました](https://developer.hatenastaff.com/entry/2021/03/12/103000)(by [@astj](https://github.com/astj))
   * はてなさんの新人研修でISHOCON1を使って頂きました。コンテスト後にきちんと振り返り時間を設けている点が良いですね！
 * [『みんなで解く ISUCON勉強会』を開催しました！](https://zenn.dev/lovegraph/articles/e4e120b6d204fb)(by [@yokoe24](https://twitter.com/yokoe24))
-  * ラブグラフさんの社内勉強会でISHOCON1を使って頂きました。ISUCON未経験の方たちでも楽しめたようで嬉しいです。
+  * ラブグラフさん主催のイベントでISHOCON1を使って頂きました。ISUCON未経験の方たちも楽しめたようで嬉しいです。
 
 
 ## ISHOCONシリーズ
