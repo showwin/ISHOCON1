@@ -1,3 +1,4 @@
 /webapp/ruby/unicorn.pid
 /admin/benchmark
 /webapp/python/__pycache__/
+.DS_Store
