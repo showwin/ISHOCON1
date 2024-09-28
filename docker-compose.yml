@@ -7,7 +7,7 @@ services:
       args:
         BASE_IMAGE: ishocon1-app-base:latest
         # ローカルで base image をビルドしない場合は以下を利用すること
-        # BASE_IMAGE: showwin/ishocon2_app_base:latest
+        # BASE_IMAGE: showwin/ishocon1_app_base:latest
     image: ishocon1-app-python:latest
     environment:
       ISHOCON_APP_LANG: "${ISHOCON_APP_LANG-python}"
@@ -20,5 +20,5 @@ services:
     command: [/home/ishocon/run.sh]
     tty: true
     ports:
-      - "8080:8080"
+      - "80:80"
       - "3306:3306"

@@ -1,0 +1,116 @@
+name: Build and push images
+
+on:
+    workflow_dispatch:
+    workflow_run:
+      workflows: ["Benchmark"]
+      branches:
+        - main
+      types:
+        - completed
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  build-base-image:
+    name: Build and push base images
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      UNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+    steps:
+      - run: echo "DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.UNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Cache docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - name: Build and push base image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          file: ./docker/app/base/Dockerfile
+          tags: ${{ env.UNAME }}/ishocon1-app-base:latest,${{ env.UNAME }}/ishocon1-app-base:${{ env.DATE }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          platforms: linux/amd64,linux/arm64/v8
+      - name: Move new cache to the place where to be cached
+        run: |
+          echo "Temporary fix for cleaning up old cache."
+          echo "See isssues:
+            - https://github.com/docker/build-push-action/issues/252
+            - https://github.com/moby/buildkit/issues/1896
+          "
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+  build-app-images:
+    name: Build app images
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: build-base-image
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          # - "go"
+          # - "nodejs"
+          - "python"
+          # - "ruby"
+    env:
+      ISHOCON_APP_LANG: ${{ matrix.language }}
+      UNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+    steps:
+      - run: echo "DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.UNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Cache docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.language }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.language }}
+            ${{ runner.os }}-buildx
+      - name: Build and push app image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          file: ./docker/app/${{ env.ISHOCON_APP_LANG }}/Dockerfile
+          tags: ${{ env.UNAME }}/ishocon1-app-${{ env.ISHOCON_APP_LANG }}:latest,${{ env.UNAME }}/ishocon1-app-${{ env.ISHOCON_APP_LANG }}:${{ env.DATE }}
+          build-args: BASE_IMAGE=${{ env.UNAME }}/ishocon1-app-base:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          platforms: linux/amd64,linux/arm64/v8
+      - name: Move new cache to the place where to be cached
+        run: |
+          echo "Temporary fix for cleaning up old cache."
+          echo "See isssues:
+            - https://github.com/docker/build-push-action/issues/252
+            - https://github.com/moby/buildkit/issues/1896
+          "
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
