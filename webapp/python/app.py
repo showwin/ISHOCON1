@@ -33,21 +33,27 @@ def db():
     if hasattr(request, "db"):
         return request.db
     else:
-        request.db = MySQLdb.connect(
+        db = MySQLdb.connect(
             host=config("db_host"),
             port=config("db_port"),
             user=config("db_username"),
             password=config("db_password"),
             database=config("db_database"),
             charset="utf8mb4",
-            conv={FIELD_TYPE.LONG: int},
+            conv={
+                FIELD_TYPE.TINY: int,
+                FIELD_TYPE.SHORT: int,
+                FIELD_TYPE.LONG: int,
+                FIELD_TYPE.INT24: int,
+            },
             cursorclass=DictCursor,
         )
-        cur = request.db.cursor()
+        cur = db.cursor()
         cur.execute(
             "SET SESSION sql_mode='TRADITIONAL,NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY'"
         )
         cur.execute("SET NAMES utf8mb4")
+        request.db = db
         return request.db
 
 
@@ -58,7 +64,9 @@ def close_db(exception=None):
 
 
 def to_jst(datetime_utc):
-    return datetime_utc + datetime.timedelta(hours=9)
+    return datetime.datetime.strptime(
+        datetime_utc, "%Y-%m-%d %H:%M:%S"
+    ) + datetime.timedelta(hours=9)
 
 
 def to_utc(datetime_jst):
@@ -98,6 +106,7 @@ def update_last_login(user_id):
             user_id,
         ),
     )
+    db().commit()
 
 
 def get_comments(product_id):
@@ -124,7 +133,7 @@ def get_comments_count(product_id):
             product_id
         )
     )
-    return cur.fetchone()["count"]
+    return int(cur.fetchone()["count"])
 
 
 def buy_product(product_id, user_id):
@@ -136,6 +145,7 @@ def buy_product(product_id, user_id):
             to_utc(datetime.datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
         )
     )
+    db().commit()
 
 
 def already_bought(product_id):
@@ -146,7 +156,7 @@ def already_bought(product_id):
         "SELECT count(*) as count FROM histories WHERE product_id = %s AND user_id = %s",
         (product_id, current_user()["id"]),
     )
-    return cur.fetchone()["count"] > 0
+    return int(cur.fetchone()["count"]) > 0
 
 
 def create_comment(product_id, user_id, content):
@@ -162,6 +172,7 @@ VALUES ({}, {}, '{}', '{}')
             to_utc(datetime.datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
         )
     )
+    db().commit()
 
 
 @app.errorhandler(401)
@@ -204,7 +215,7 @@ def get_index():
 
     for product in products:
         product["description"] = product["description"][:70]
-        product["created_at"] = to_jst(product["created_at"])
+        product["created_at"] = to_jst(product["created_at"].decode())
         product["comments"] = get_comments(product["id"])
         product["comments_count"] = get_comments_count(product["id"])
 
@@ -231,7 +242,7 @@ ORDER BY h.id DESC
     for product in products:
         total_pay += product["price"]
         product["description"] = product["description"][:70]
-        product["created_at"] = to_jst(product["created_at"])
+        product["created_at"] = to_jst(product["created_at"].decode())
 
     cur = db().cursor()
     cur.execute("SELECT * FROM users WHERE id = {}".format(str(user_id)))
@@ -287,6 +298,7 @@ def get_initialize():
     cur.execute("DELETE FROM products WHERE id > 10000")
     cur.execute("DELETE FROM comments WHERE id > 200000")
     cur.execute("DELETE FROM histories WHERE id > 500000")
+    db().commit()
     return "Finish"
 
 

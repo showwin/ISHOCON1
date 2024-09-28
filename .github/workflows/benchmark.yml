@@ -1,0 +1,44 @@
+name: Benchmark
+
+on:
+    workflow_dispatch:
+    push:
+
+jobs:
+  benchmark:
+    name: Run benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          # - "go"
+          # - "nodejs"
+          - "python"
+          # - "ruby"
+    env:
+      ISHOCON_APP_LANG: ${{ matrix.language }}
+      UNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Replace base image in docker-compose.yml with github actor name
+        run: |
+          make change-lang
+          sed -i 's/ishocon1-app-base/${{ env.UNAME }}\/ishocon1-app-base/g' ./docker-compose.yml
+          sed -i 's/ishocon1-app-${{ env.ISHOCON_APP_LANG }}/${{ env.UNAME }}\/ishocon1-app-${{ env.ISHOCON_APP_LANG }}/g' ./docker-compose.yml
+          cat ./docker-compose.yml
+
+      - name: Build images
+        run: |
+          make pull || true
+          make build
+        timeout-minutes: 20
+
+      - run: make bench-from-scratch
+        timeout-minutes: 10
+
+      - name: Dump docker logs
+        uses: jwalton/gh-docker-logs@v2
+        if: ${{ always() }}
