@@ -9,7 +9,6 @@ $ cd ISHOCON1
 
 ```
 $ make change-lang ISHOCON_APP_LANG=<your_language>
-$ export ISHOCON_APP_LANG=<your_language>
 ```
 
 ```

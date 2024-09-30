@@ -86,6 +86,7 @@ change-lang: check-lang
 	if sed --version 2>&1 | grep -q GNU; then \
 		echo "GNU sed"; \
 		sed -i 's/\(ruby\|python\|go\|nodejs\)/'"$(ISHOCON_APP_LANG)"'/g' ./docker-compose.yml; \
+		export ISHOCON_APP_LANG=$(ISHOCON_APP_LANG); \
 	else \
 		echo "BSD sed"; \
 		sed -i '' -E 's/(ruby|python|go|nodejs)/'"$(ISHOCON_APP_LANG)"'/g' ./docker-compose.yml; \
