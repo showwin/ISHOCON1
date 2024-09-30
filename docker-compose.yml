@@ -3,14 +3,14 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./docker/app/python/Dockerfile
+      dockerfile: ./docker/app/ruby/Dockerfile
       args:
         BASE_IMAGE: ishocon1-app-base:latest
         # ローカルで base image をビルドしない場合は以下を利用すること
         # BASE_IMAGE: showwin/ishocon1_app_base:latest
-    image: ishocon1-app-python:latest
+    image: ishocon1-app-ruby:latest
     environment:
-      ISHOCON_APP_LANG: "${ISHOCON_APP_LANG-python}"
+      ISHOCON_APP_LANG: "${ISHOCON_APP_LANG-ruby}"
     healthcheck:
       test: ["CMD", "test", "-f", "/tmp/ishocon-app"]
       interval: 10s
