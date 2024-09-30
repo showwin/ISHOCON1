@@ -27,6 +27,7 @@ jobs:
         run: |
           make change-lang
           sed -i 's/ishocon1-app-base/${{ env.UNAME }}\/ishocon1-app-base/g' ./docker-compose.yml
+          sed -i 's/ishocon1-bench/${{ env.UNAME }}\/ishocon1-bench/g' ./docker-compose.yml
           sed -i 's/ishocon1-app-${{ env.ISHOCON_APP_LANG }}/${{ env.UNAME }}\/ishocon1-app-${{ env.ISHOCON_APP_LANG }}/g' ./docker-compose.yml
           cat ./docker-compose.yml
 
@@ -36,7 +37,7 @@ jobs:
           make build
         timeout-minutes: 20
 
-      - run: make bench-from-scratch
+      - run: make up bench-with-db-init
         timeout-minutes: 10
 
       - name: Dump docker logs

@@ -1,30 +1,3 @@
-### benchmarker builder
-FROM ubuntu:20.04 as benchmarker-builder
-
-ENV LANG en_US.UTF-8
-ENV LC_ALL=C.UTF-8
-ENV TZ Asia/Tokyo
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-RUN apt-get update && \
-    apt-get install -y wget tzdata && \
-    apt-get clean
-
-# Go のインストール
-ARG TARGETARCH
-RUN wget -q https://dl.google.com/go/go1.13.15.linux-${TARGETARCH}.tar.gz && \
-    tar -C /usr/local -xzf go1.13.15.linux-${TARGETARCH}.tar.gz && \
-    rm go1.13.15.linux-${TARGETARCH}.tar.gz
-ENV PATH=$PATH:/usr/local/go/bin \
-    GOROOT=/usr/local/go \
-    GOPATH=$HOME/.local/go
-
-# build benchmark
-COPY admin/benchmarker /root/admin/benchmarker
-RUN cd /root/admin/benchmarker &&  \
-    GOARCH=${TARGETARCH} go build -x -o ../../benchmark *.go
-
-### base image
 FROM ubuntu:20.04
 
 ENV LANG=en_US.UTF-8 \
@@ -43,9 +16,6 @@ RUN groupadd -g 1001 ishocon && \
     useradd  -g ishocon -G sudo -m -s /bin/bash ishocon && \
     echo 'ishocon:ishocon' | chpasswd
 RUN echo 'ishocon ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-# benchmarker のコピー
-COPY --from=benchmarker-builder /root/benchmark /home/ishocon/benchmark
 
 # *env 系の設定が入った .bashrc のコピー
 COPY docker/app/base/.bashrc /home/ishocon/.bashrc

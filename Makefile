@@ -16,7 +16,14 @@ build-base:
 	-t $(UNAME)/ishocon1-app-base:latest \
 	.;
 
-build: change-lang build-base
+build-bench:
+	docker build \
+	-f ./docker/benchmarker/Dockerfile \
+	-t ishocon1-bench:latest \
+	-t $(UNAME)/ishocon1-bench:latest \
+	.;
+
+build-app: change-lang build-base
 	ISHOCON_APP_LANG=$(ISHOCON_APP_LANG:python)
 	docker build \
 	--build-arg BASE_IMAGE=$(LOCAL_ISHOCON_BASE_IMAGE) \
@@ -24,7 +31,13 @@ build: change-lang build-base
 	-t ishocon1-app-$(ISHOCON_APP_LANG):latest \
 	-t $(UNAME)/ishocon1-app-$(ISHOCON_APP_LANG):latest \
 	.;
+
+build: build-bench build-app
 	@echo "Build done."
+
+pull-bench:
+	docker pull $(UNAME)/ishocon1-bench:latest;
+	docker tag $(UNAME)/ishocon1-bench:latest ishocon1-bench:latest;
 
 pull-base:
 	docker pull $(UNAME)/ishocon1-app-base:latest;
@@ -34,10 +47,11 @@ pull-app: check-lang
 	docker pull $(UNAME)/ishocon1-app-$(ISHOCON_APP_LANG):latest;
 	docker tag $(UNAME)/ishocon1-app-$(ISHOCON_APP_LANG):latest ishocon1-app-$(ISHOCON_APP_LANG):latest;
 
-pull: pull-base pull-app
+pull: pull-bench pull-base pull-app
 	@echo "Pull done."
 
 push:
+	docker push $(UNAME)/ishocon1-bench:latest;
 	docker push $(UNAME)/ishocon1-app-base:latest;
 	docker push $(UNAME)/ishocon1-app-$(ISHOCON_APP_LANG):latest;
 
@@ -53,10 +67,12 @@ down:
 bench:
 	docker exec -i ishocon1-app-1 sh -c "./benchmark --workload ${WORKLOAD}"
 
-bench-from-scratch:
-	docker compose up -d;
-	sleep 30;
-	docker exec -i ishocon1-app-1 sh -c "./benchmark --workload ${WORKLOAD}"
+bench-with-db-init:
+	docker exec -i ishocon1-bench-1 sh -c " \
+		service mysql restart && \
+		tar -zxvf ~/admin/ishocon1.dump.tar.gz -C ~/admin && mysql -u root -pishocon ishocon1 < ~/admin/ishocon1.dump && \
+		./benchmark --ip app:80 --workload ${WORKLOAD} \
+	";
 
 check-lang:
 	if echo "$(ISHOCON_APP_LANG)" | grep -qE '^(ruby|python|go|nodejs)$$'; then \
