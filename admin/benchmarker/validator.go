@@ -17,11 +17,11 @@ func validateInitialize() {
 	validateIndex(10, false)
 	validateProducts(false)
 	validateUsers(1500, false)
-	id, email, password := getUserInfo(0)
+	userId, email, password := getUserInfo(0)
 	var c []*http.Cookie
 	_, c = postLogin(c, email, password)
-	buyProduct(c, 10000)
-	validateUsers(id, true)
+	buyProductForValidation(c, userId, 10000)
+	validateUsers(userId, true)
 	sendComment(c, 10000)
 	validateIndex(0, true)
 }

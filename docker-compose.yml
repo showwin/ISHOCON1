@@ -22,3 +22,18 @@ services:
     ports:
       - "80:80"
       - "3306:3306"
+    volumes:
+      - ./webapp:/home/ishocon/webapp
+
+  bench:
+    image: ishocon1-bench:latest
+    # ローカルで bench image をビルドしない場合は以下を利用すること
+    # image: showwin/ishocon1_bench:latest
+    command: tail -f /dev/null
+    links:
+      - app
+    environment:
+      TARGET: app
+    depends_on:
+      app:
+        condition: service_healthy
