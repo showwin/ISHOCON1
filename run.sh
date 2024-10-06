@@ -56,25 +56,5 @@ function run_go() {
   /tmp/go/webapp
 }
 
-function run_php() {
-  cd "/home/ishocon/webapp/$app_lang"
-  sudo service php7.2-fpm restart
-  make_tmp_file
-  sudo tail -f /var/log/nginx/access.log /var/log/nginx/error.log
-}
-
-function run_nodejs() {
-  cd "/home/ishocon/webapp/$app_lang"
-  make_tmp_file
-  npm run start
-}
-
-function run_crystal() {
-  cd "/home/ishocon/webapp/$app_lang"
-  sudo shards install
-  make_tmp_file
-  sudo crystal app.cr
-}
-
 echo "starting running $app_lang app..."
 "run_${app_lang}"

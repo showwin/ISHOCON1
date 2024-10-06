@@ -75,18 +75,18 @@ bench-with-db-init:
 	";
 
 check-lang:
-	if echo "$(ISHOCON_APP_LANG)" | grep -qE '^(ruby|python|go|nodejs)$$'; then \
+	if echo "$(ISHOCON_APP_LANG)" | grep -qE '^(ruby|python|go)$$'; then \
         echo "ISHOCON_APP_LANG is valid."; \
     else \
-        echo "Invalid ISHOCON_APP_LANG. It must be one of: ruby, python, go, nodejs."; \
+        echo "Invalid ISHOCON_APP_LANG. It must be one of: ruby, python, go."; \
         exit 1; \
     fi;
 
 change-lang: check-lang
 	if sed --version 2>&1 | grep -q GNU; then \
 		echo "GNU sed"; \
-		sed -i 's/\(ruby\|python\|go\|nodejs\)/'"$(ISHOCON_APP_LANG)"'/g' ./docker-compose.yml; \
+		sed -i 's/\(ruby\|python\|go\)/'"$(ISHOCON_APP_LANG)"'/g' ./docker-compose.yml; \
 	else \
 		echo "BSD sed"; \
-		sed -i '' -E 's/(ruby|python|go|nodejs)/'"$(ISHOCON_APP_LANG)"'/g' ./docker-compose.yml; \
+		sed -i '' -E 's/(ruby|python|go)/'"$(ISHOCON_APP_LANG)"'/g' ./docker-compose.yml; \
 	fi;
