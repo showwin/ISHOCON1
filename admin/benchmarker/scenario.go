@@ -11,8 +11,8 @@ import (
 )
 
 /*
-  ログインをして、商品一覧ページに多めにアクセスする (画像読み込み含む)
-  サイトに負荷をかけているのに、商品を買わない嫌なユーザ
+ログインをして、商品一覧ページに多めにアクセスする (画像読み込み含む)
+サイトに負荷をかけているのに、商品を買わない嫌なユーザ
 */
 func justLookingScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	score := 0
@@ -65,8 +65,8 @@ func justLookingScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time
 }
 
 /*
-  ログインしないで、ユーザページに多めにアクセスする
-  他人の購入履歴を見てニヤニヤしている、ネットストーカー
+ログインしないで、ユーザページに多めにアクセスする
+他人の購入履歴を見てニヤニヤしている、ネットストーカー
 */
 func stalkerScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	score := 0
@@ -93,8 +93,8 @@ func stalkerScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 }
 
 /*
-  ひたすら商品を買って、コメントをする
-  近年経済成長し、品質の高い先進国の商品を買いたくなっている人
+ひたすら商品を買って、コメントをする
+近年経済成長し、品質の高い先進国の商品を買いたくなっている人
 */
 func bakugaiScenario(wg *sync.WaitGroup, m *sync.Mutex, finishTime time.Time) {
 	score := 0

@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         language:
-          # - "go"
+          - "go"
           # - "nodejs"
           - "python"
           - "ruby"
