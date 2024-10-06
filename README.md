@@ -20,7 +20,7 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
 * AMI: `ami-0d00b2a9a38084503`
 * インスタンスタイプ: `c5.xlarge`
 * 参考実装言語: Ruby, Go, Python
-  * メンテナンス外: Crystal(by [@Goryudyuma](https://github.com/Goryudyuma)), Scala(by [@Goryudyuma](https://github.com/Goryudyuma))
+  * メンテナンス外: Node.js(TypeScript), Crystal(by [@Goryudyuma](https://github.com/Goryudyuma)), Scala(by [@Goryudyuma](https://github.com/Goryudyuma))
 * 推奨実施時間: 1人で8時間
 
 ## 社内ISUCON等のイベントで使用したい方

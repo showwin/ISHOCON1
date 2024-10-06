@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      UNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      UNAME: ${{ vars.DOCKER_HUB_USERNAME }}
     steps:
       - run: echo "DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
       - uses: actions/checkout@v4
@@ -67,13 +67,12 @@ jobs:
       fail-fast: false
       matrix:
         language:
-          # - "go"
-          # - "nodejs"
+          - "go"
           - "python"
-          # - "ruby"
+          - "ruby"
     env:
       ISHOCON_APP_LANG: ${{ matrix.language }}
-      UNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      UNAME: ${{ vars.DOCKER_HUB_USERNAME }}
     steps:
       - run: echo "DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
       - uses: actions/checkout@v4
