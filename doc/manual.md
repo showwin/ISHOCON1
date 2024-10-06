@@ -4,12 +4,12 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-0d00b2a9a38084503
-* Instance Type: c5.xlarge
+* AMI: ami-06cda439fc5c0da1b
+* Instance Type: c7i.xlarge
 * EBS-optimized: Yes
-* Root Volume: 8GB, General Purpose SSD (gp2)
+* Root Volume: 8GB, General Purpose SSD (gp3)
 
-参考画像  
+参考画像
 * Security Groupの設定で `TCP 22 (SSH)` と `TCP 80 (HTTP)` を `Inbound 0.0.0.0/0` からアクセスできるようにしてください。
 ![](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/instance3.png)
 
@@ -27,9 +27,9 @@ $ sudo su - ishocon
 
 ```
 $ ls
- benchmark    #ベンチマーカー
- db_init.sh   #DBの初期化スクリプト(後で説明)
- webapp       #最適化するアプリケーション
+benchmark # ベンチマーカー
+data      # DBの初期化データ (後で説明)
+webapp    # 最適化するアプリケーション
 ```
 
 ### Web サーバーを立ち上げる
@@ -48,19 +48,18 @@ $ gunicorn -c gunicorn_config.py app:app
 #### Go の場合
 ```
 $ cd ~/webapp/go
-$ go get -t -d -v ./...
 $ go build -o webapp *.go
 $ ./webapp
 ```
 
-#### Scala の場合
+#### Scala の場合 (メンテナンス外)
 ```
 $ cd ~/webapp/scala/ishocon1
 $ sbt
 > ~;jetty:stop;jetty:start
 ```
 
-#### Node.js (TypeScript) の場合
+#### Node.js (TypeScript) の場合 (メンテナンス外)
 ```
 $ cd ~/webapp/nodejs/
 $ npm install
@@ -88,16 +87,15 @@ index eb5e600..600ba5e 100644
 ```
 
 
-#### Crystal の場合
+#### Crystal の場合 (メンテナンス外)
 ```
-# メンテナンスされておらず動きません
 $ cd ~/webapp/crystal
 $ shards install
 $ crystal build app.cr
 $ ./app
 ```
 
-これでブラウザからアプリケーションが見れるようになるので、IPアドレスにアクセスしてみましょう。  
+これでブラウザからアプリケーションが見れるようになるので、 `http://<IPアドレス>` にアクセスしてみましょう。
 
 **トップページ**
 ![トップページ](https://raw.githubusercontent.com/showwin/ISHOCON1/master/doc/images/top.png)
@@ -118,7 +116,7 @@ $ ./benchmark --workload 3
 ```
 * ベンチマーカーは並列実行可能で、負荷量を指定することができます。
 * 何も指定しない場合は3で実行されます。
-* 初期実装でスコアは100点前後になると思います。(workloadが3の場合)
+* 初期実装でスコアは400点前後になると思います。(workloadが3の場合)
 * 並列度が高い場合は1分以上経っても終了しない場合がありますが、スコアには影響ありません。
 
 ## MySQL
@@ -126,13 +124,13 @@ $ ./benchmark --workload 3
 * ユーザ名: ishocon, パスワード: ishocon
 * ユーザ名: root, パスワード: ishocon1
 
-別のバージョンのMySQLに変更することも可能です。  
+別のバージョンのMySQLに変更することも可能です。
 その場合、初期データの挿入は
 ```
 $ cd
-$ ./db_init.sh
+$ sudo mysql -u root -pishocon1 ishocon1 < ~/data/ishocon1.dump
 ```
-で行うことができます。  
+で行うことができます。
 既存のMySQLを使う限りはこれを実行する必要はありません。
 
 ## スコアについて

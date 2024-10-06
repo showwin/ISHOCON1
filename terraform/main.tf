@@ -35,7 +35,7 @@ resource "aws_security_group" "player" {
 resource "aws_spot_instance_request" "player" {
   for_each = local.players
 
-  ami           = "ami-0d00b2a9a38084503"
+  ami           = "ami-06cda439fc5c0da1b"
   instance_type = "c5.xlarge"
 
   subnet_id = aws_subnet.player_subnet.id

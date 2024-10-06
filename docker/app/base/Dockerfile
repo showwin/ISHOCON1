@@ -18,10 +18,10 @@ RUN groupadd -g 1001 ishocon && \
 RUN echo 'ishocon ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # *env 系の設定が入った .bashrc のコピー
-COPY docker/app/base/.bashrc /home/ishocon/.bashrc
+COPY admin/.bashrc /home/ishocon/.bashrc
 
 # Nginx の設定
-COPY docker/app/base/nginx.conf /etc/nginx/nginx.conf
+COPY admin/nginx.conf /etc/nginx/nginx.conf
 
 # MySQL のインストールと dump, cnf の配置
 RUN ["/bin/bash", "-c", "debconf-set-selections <<< 'mysql-server mysql-server/root_password password ishocon1'"]
