@@ -70,7 +70,7 @@ bench:
 bench-with-db-init:
 	docker exec -i ishocon1-bench-1 sh -c " \
 		service mysql restart && \
-		tar -zxvf ~/admin/ishocon1.dump.tar.gz -C ~/admin && mysql -u root -pishocon ishocon1 < ~/admin/ishocon1.dump && \
+		tar -zxvf ~/admin/ishocon1.dump.tar.gz -C ~/admin && mysql -u root -pishocon ishocon1_bench < ~/admin/ishocon1.dump && \
 		./benchmark --ip app:80 --workload ${WORKLOAD} \
 	";
 

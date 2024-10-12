@@ -34,10 +34,10 @@ RUN ["/bin/bash", "-c", "debconf-set-selections <<< 'mysql-service mysql-server/
 
 # 初期データ投入
 RUN service mysql start && \
-    mysql -u root -pishocon -e 'CREATE DATABASE IF NOT EXISTS ishocon1;' && \
+    mysql -u root -pishocon -e 'CREATE DATABASE IF NOT EXISTS ishocon1_bench;' && \
     mysql -u root -pishocon -e "CREATE USER IF NOT EXISTS ishocon IDENTIFIED BY 'ishocon';" && \
     mysql -u root -pishocon -e 'GRANT ALL ON *.* TO ishocon;' && \
-    tar -zxvf ~/admin/ishocon1.dump.tar.gz -C ~/admin && mysql -u root -pishocon ishocon1 < ~/admin/ishocon1.dump && \
+    tar -zxvf ~/admin/ishocon1.dump.tar.gz -C ~/admin && mysql -u root -pishocon ishocon1_bench < ~/admin/ishocon1.dump && \
     rm -rf ~/admin/ishocon1.dump
 
 
