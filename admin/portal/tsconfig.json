@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "es6",
+    "module": "es6",
+    "strict": true,
+    "moduleResolution": "node" // Resolve D3 from node_modules
+  },
+  "include": [
+    "./src/**/*.ts"
+  ]
+}
