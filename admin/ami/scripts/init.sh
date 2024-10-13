@@ -20,4 +20,4 @@ echo 'ishocon ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ishocon
 sudo mkdir -m 775 /home/ishocon/webapp
 sudo mkdir -m 777 /home/ishocon/data
 sudo chown -R ishocon:ishocon /home/ishocon
-sudo chmod 777 /home/ishocon
+sudo chmod 750 /home/ishocon
