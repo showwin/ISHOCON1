@@ -119,17 +119,17 @@ build {
 
   # WebApp
   provisioner "file" {
-    source      = "../admin/.bashrc"
+    source      = "../.bashrc"
     destination = "/tmp/.bashrc"
   }
 
   provisioner "file" {
-    source      = "../admin/nginx.conf"
+    source      = "../nginx.conf"
     destination = "/tmp/nginx.conf"
   }
 
   provisioner "file" {
-    source      = "../admin/ishocon1.dump.tar.gz"
+    source      = "../ishocon1.dump.tar.gz"
     destination = "/tmp/ishocon1.dump.tar.gz"
   }
 

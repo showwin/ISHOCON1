@@ -12,8 +12,8 @@ $ cd ishocon1/ami
 $ cp _secret_vars.hcl secret_vars.hcl
 # Update your values at `secret_vars.hcl`
 
-$ cd ../ && tar -zcvf ami/webapp.tar.gz ./webapp && cd ami
-$ cd ../admin/ && tar -zcvf ../ami/benchmarker.tar.gz ./benchmarker && cd ../ami
+$ cd ../../ && tar -zcvf admin/ami/webapp.tar.gz ./webapp && cd admin/ami
+$ cd ../ && tar -zcvf ami/benchmarker.tar.gz ./benchmarker && cd ami
 
 $ packer init .
 $ packer validate -var-file=shared_vars.hcl -var-file=secret_vars.hcl .
