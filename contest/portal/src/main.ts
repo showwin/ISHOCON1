@@ -4,7 +4,7 @@ interface TeamScore {
     timestamp: string;
 }
 
-const apiUrl = "https://<API_GATEWAY_DOMAIN_NAME>/teams";
+const apiUrl = "<<API_GATEWAY_DOMAIN_URL>>teams";
 
 // Function to fetch the latest data
 async function fetchData() {

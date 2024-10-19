@@ -1,2 +1,5 @@
 .terraform
-terraform.tfstate*
+*terraform.tfstate*
+*.py
+*.zip
+*.js

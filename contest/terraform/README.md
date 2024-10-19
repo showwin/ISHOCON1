@@ -1,14 +1,19 @@
-# terraform
+# Terraform
 
 ## 概要
 
-terraformでISHOCON1の環境が構築できます。
+TerraformでISHOCON1の環境が構築できます。
 社内ISUCON等のコンテストの開催準備として使うと便利です。
-開催者(以下admins)と参加者(以下teams)のロールに分けて、サーバーを複数台準備できます。
+
+## 作成されるもの
+* チーム毎に1台の競技に使用するEC2インスタンス
+* 各チームのスコアがリアルタイムに見れるポータルサイト
 
 ## 必要なもの
 
 - 支払情報が紐付けされたAWSアカウント
+  - ポータルサイトは低コストになるように実装していますが、主に以下の費用がかかります。
+    - DynamoDB, Lambda, CloudWatch, API Gateway, S3
 - IAMユーザのアクセスIDとシークレットアクセスキー
 
 ## 手順
@@ -40,9 +45,20 @@ $ ssh -T git@github.com
 ```shell
 $ cd main
 $ terraform apply
+
+...
+
+Outputs:
+
+apigateway_url = "https://123456789.execute-api.ap-northeast-1.amazonaws.com/"
+ip_addr = {
+  "team1" = "11.111.111.111"
+  "team2" = "11.111.111.112"
+}
+portal_url = "http://ishocon1-portal123456789.s3-website-ap-northeast-1.amazonaws.com"
 ```
 
-outputに競技で使用するインスタンスのIPアドレスが出力されるので、参加者に共有する。
+Outputに競技で使用するインスタンスのIPアドレスとポータルサイトのアドレスが出力されるので、参加者に共有する。
 
 ```
 $ ssh ishocon@<instance_ip>
@@ -53,5 +69,5 @@ $ ssh ishocon@<instance_ip>
 ## 注意点
 
 - デフォルトでは、ISHOCON1の推奨インスタンスタイプである `c7i.xlarge` でインスタンスが起動します
-- このterraformを使用することで発生した問題に対して責任は一切取りません
+- このTerraformを使用することで発生した問題に対して責任は一切取りません
   - コードをよく読んだ上で、自己責任でご使用ください

@@ -29,15 +29,15 @@ EOF
 }
 
 resource "aws_ec2_tag" "spot_instance_name" {
-  for_each    = aws_spot_instance_request.main
+  for_each = aws_spot_instance_request.main
 
   resource_id = each.value.spot_instance_id
   key         = "Name"
-  value       = "ISHOCON1 - ${each.key}"
+  value       = "${var.name} - ${each.key}"
 }
 
 resource "aws_ec2_tag" "spot_instance_team_name" {
-  for_each    = aws_spot_instance_request.main
+  for_each = aws_spot_instance_request.main
 
   resource_id = each.value.spot_instance_id
   key         = "team_name"
@@ -45,7 +45,7 @@ resource "aws_ec2_tag" "spot_instance_team_name" {
 }
 
 resource "aws_ec2_tag" "spot_instance_players" {
-  for_each    = aws_spot_instance_request.main
+  for_each = aws_spot_instance_request.main
 
   resource_id = each.value.spot_instance_id
   key         = "players"

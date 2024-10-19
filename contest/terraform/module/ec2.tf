@@ -27,15 +27,15 @@ EOF
 }
 
 resource "aws_ec2_tag" "instance_name" {
-  for_each    = aws_instance.main
+  for_each = aws_instance.main
 
   resource_id = each.value.id
   key         = "Name"
-  value       = "ISHOCON1 - ${each.key}"
+  value       = "${var.name} - ${each.key}"
 }
 
 resource "aws_ec2_tag" "instance_team_name" {
-  for_each    = aws_instance.main
+  for_each = aws_instance.main
 
   resource_id = each.value.id
   key         = "team_name"
@@ -43,7 +43,7 @@ resource "aws_ec2_tag" "instance_team_name" {
 }
 
 resource "aws_ec2_tag" "instance_players" {
-  for_each    = aws_instance.main
+  for_each = aws_instance.main
 
   resource_id = each.value.id
   key         = "players"
