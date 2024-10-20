@@ -17,7 +17,7 @@ ISUCONは3人チームで取り組むことを基準に課題が作られてい�
 
 ## 問題詳細
 * マニュアル: [ISHOCON1マニュアル](https://github.com/showwin/ISHOCON1/blob/master/doc/manual.md)
-* AMI: `ami-0df9d6920cdfce51b`
+* AMI: `ami-05861adff828ed920`
 * インスタンスタイプ: `c7i.xlarge`
 * 参考実装言語: Ruby, Go, Python
   * メンテナンス外: Node.js(TypeScript), Crystal(by [@Goryudyuma](https://github.com/Goryudyuma)), Scala(by [@Goryudyuma](https://github.com/Goryudyuma))

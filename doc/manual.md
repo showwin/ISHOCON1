@@ -4,7 +4,7 @@
 
 ## インスタンスの作成
 AWSのイメージのみ作成しました。
-* AMI: ami-0df9d6920cdfce51b
+* AMI: ami-05861adff828ed920
 * Instance Type: c7i.xlarge
 * EBS-optimized: Yes
 * Root Volume: 8GB, General Purpose SSD (gp3)
