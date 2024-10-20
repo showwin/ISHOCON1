@@ -6,9 +6,17 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.69"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.6.0"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5.0"
+    }
   }
 }
 
 provider "aws" {
-  region  = "ap-northeast-1"
+  region = "ap-northeast-1"
 }

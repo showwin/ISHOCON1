@@ -18,6 +18,8 @@ ${join("\n", [for player_in_team in var.teams[each.value] : "curl https://github
 ${join("\n", [for admin in var.admins : "curl https://github.com/${admin}.keys >> /home/ishocon/.ssh/authorized_keys"])}
 chown -R ishocon:ishocon /home/ishocon/.ssh
 useradd -u 1001 -g 1001 -o -N -d /home/ishocon -s /bin/bash ${each.value}
+echo "export BENCH_TEAM_NAME=${each.value}" >> /home/ishocon/.bashrc
+echo "export BENCH_PORTAL_APIGW_URL=${aws_apigatewayv2_stage.portal.invoke_url}" >> /home/ishocon/.bashrc
 
 EOF
 
@@ -29,15 +31,15 @@ EOF
 }
 
 resource "aws_ec2_tag" "spot_instance_name" {
-  for_each    = aws_spot_instance_request.main
+  for_each = aws_spot_instance_request.main
 
   resource_id = each.value.spot_instance_id
   key         = "Name"
-  value       = "ISHOCON1 - ${each.key}"
+  value       = "${var.name} - ${each.key}"
 }
 
 resource "aws_ec2_tag" "spot_instance_team_name" {
-  for_each    = aws_spot_instance_request.main
+  for_each = aws_spot_instance_request.main
 
   resource_id = each.value.spot_instance_id
   key         = "team_name"
@@ -45,7 +47,7 @@ resource "aws_ec2_tag" "spot_instance_team_name" {
 }
 
 resource "aws_ec2_tag" "spot_instance_players" {
-  for_each    = aws_spot_instance_request.main
+  for_each = aws_spot_instance_request.main
 
   resource_id = each.value.spot_instance_id
   key         = "players"

@@ -21,7 +21,7 @@ module "main" {
   source = "../module"
 
   admins = local.admins
-  teams = local.teams
+  teams  = local.teams
 
   use_spot_instance = false
 }

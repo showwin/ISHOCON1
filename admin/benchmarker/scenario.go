@@ -1,7 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -142,6 +146,7 @@ func updateScore(score int, wg *sync.WaitGroup, m *sync.Mutex, finishTime time.T
 		if finished == false {
 			finished = true
 			showScore()
+			postScore()
 		}
 	}
 }
@@ -154,4 +159,64 @@ func calcScore(score int, response int) int {
 	} else {
 		return score - 50
 	}
+}
+
+func showScore() {
+	log.Print("Benchmark Finish!")
+	log.Print("Score: " + strconv.Itoa(totalScore))
+	log.Print("Waiting for Stopping All Benchmarkers ...")
+}
+
+func postScore() {
+	apiURL := os.Getenv("BENCH_PORTAL_APIGW_URL")
+	teamName := os.Getenv("BENCH_TEAM_NAME")
+	if apiURL == "" && teamName == "" {
+		return
+	}
+
+	location, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		log.Print("Failed to send score")
+		log.Printf("Error loading location: %v\n", err)
+		return
+	}
+	now := time.Now().In(location)
+	timestamp := now.Format(time.RFC3339)
+
+	// Define the data to be sent
+	data := map[string]interface{}{
+		"team":      teamName,
+		"score":     totalScore,
+		"timestamp": timestamp,
+	}
+
+	// Convert the data to JSON
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		log.Print("Failed to send score")
+		log.Printf("Error encoding JSON: %v\n", err)
+		return
+	}
+
+	// Create the PUT request
+	req, err := http.NewRequest("PUT", apiURL+"teams", bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Print("Failed to send score")
+		log.Printf("Error creating request: %v\n", err)
+		return
+	}
+
+	// Set headers
+	req.Header.Set("Content-Type", "application/json")
+
+	// Send the request using the http.DefaultClient
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Print("Failed to send score")
+		log.Printf("Error sending request: %v\n", err)
+		return
+	}
+	defer resp.Body.Close()
+	log.Print("Sent score to portal site")
 }
