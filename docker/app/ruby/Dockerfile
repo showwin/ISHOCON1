@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=ishocon2-app-base:latest
 FROM ${BASE_IMAGE}
 
-ENV RUBY_VERSION=2.7.1
+ENV RUBY_VERSION=3.3.5
 
 # Ruby のインストール
 RUN sudo apt-get update && \
@@ -18,7 +18,7 @@ COPY --chown=ishocon:ishocon webapp/ /home/ishocon/webapp
 
 WORKDIR /home/ishocon
 
-RUN sudo gem install bundler -v "1.16.1" && \
+RUN sudo gem install bundler -v "2.5.22" && \
     cd webapp/ruby && \
     . /home/ishocon/.bashrc && \
     bundle install

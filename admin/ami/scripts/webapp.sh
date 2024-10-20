@@ -14,7 +14,7 @@ chown -R ishocon:ishocon /home/ishocon/webapp
 
 # # Install Ruby libraries
 cd /home/ishocon/webapp/ruby
-gem install bundler -v "1.16.1"
+gem install bundler -v "2.5.22"
 bundle install
 
 # # Install Python libraries

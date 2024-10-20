@@ -1,26 +1,31 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    base64 (0.2.0)
     erubis (2.7.0)
-    foreman (0.87.2)
-    kgio (2.11.3)
-    mustermann (1.1.1)
+    foreman (0.88.1)
+    kgio (2.11.4)
+    mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
-    mysql2 (0.5.3)
-    mysql2-cs-bind (0.0.7)
+    mysql2 (0.5.6)
+    mysql2-cs-bind (0.1.1)
       mysql2
-    rack (2.2.3)
-    rack-protection (2.0.8.1)
-      rack
-    raindrops (0.19.1)
-    ruby2_keywords (0.0.2)
-    sinatra (2.0.8.1)
-      mustermann (~> 1.0)
-      rack (~> 2.0)
-      rack-protection (= 2.0.8.1)
+    rack (3.1.8)
+    rack-protection (4.0.0)
+      base64 (>= 0.1.0)
+      rack (>= 3.0.0, < 4)
+    rack-session (2.0.0)
+      rack (>= 3.0.0)
+    raindrops (0.20.1)
+    ruby2_keywords (0.0.5)
+    sinatra (4.0.0)
+      mustermann (~> 3.0)
+      rack (>= 3.0.0, < 4)
+      rack-protection (= 4.0.0)
+      rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
-    tilt (2.0.10)
-    unicorn (5.6.0)
+    tilt (2.4.0)
+    unicorn (6.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
 
@@ -30,7 +35,7 @@ PLATFORMS
 DEPENDENCIES
   erubis
   foreman
-  mysql2 (= 0.5.3)
+  mysql2 (= 0.5.6)
   mysql2-cs-bind
   sinatra
   unicorn
