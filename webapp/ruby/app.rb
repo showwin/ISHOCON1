@@ -9,7 +9,7 @@ module Ishocon1
 end
 
 class Ishocon1::WebApp < Sinatra::Base
-  session_secret = ENV['ISHOCON1_SESSION_SECRET'] || 'showwin_happy'
+  session_secret = ENV['ISHOCON1_SESSION_SECRET'] || 'showwin_happy' * 10
   use Rack::Session::Cookie, key: 'rack.session', secret: session_secret
   set :erb, escape_html: true
   set :public_folder, File.expand_path('../public', __FILE__)

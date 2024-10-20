@@ -10,7 +10,7 @@ sudo debconf-set-selections <<< 'mysql-service mysql-server/mysql-apt-config str
 sudo apt-get install -y mysql-server
 
 # Install Ruby
-export RUBY_VERSION=2.7.1
+export RUBY_VERSION=3.3.5
 sudo apt-get install -y ruby-dev libmysqlclient-dev libffi-dev libyaml-dev bzip2
 sudo apt-get clean
 git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
