@@ -65,6 +65,13 @@ $ ssh ishocon@<instance_ip>
 ```
 
 でインスタンスにSSHできる。
+ベンチマーカーを実行すると、スコアを `apigateway_url` に投稿するようになっており、自動的にポータルサイトに結果が表示される。
+
+ポータルサイトに表示されているデータをすべて削除したい場合は以下のコマンドを実行する。
+
+```
+$ terraform output -raw apigateway_url | xargs -I {} curl -X "DELETE" "{}teams"
+```
 
 ## 注意点
 

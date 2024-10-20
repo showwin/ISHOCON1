@@ -16,9 +16,13 @@ def lambda_handler(event, context):
 
     try:
         if event["routeKey"] == "DELETE /teams":
-            table.delete_item(Key={"id": event["pathParameters"]["id"]})
-            body = "Deleted item " + event["pathParameters"]["id"]
-            body = responseBody
+            scan = table.scan()
+            with table.batch_writer() as batch:
+                for each in scan["Items"]:
+                    batch.delete_item(
+                        Key={"team": each["team"], "timestamp": each["timestamp"]}
+                    )
+            body = "Deleted all items"
         elif event["routeKey"] == "GET /teams":
             body = table.scan()
             body = body["Items"]
