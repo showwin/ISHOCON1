@@ -20,7 +20,7 @@ git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-bu
 rbenv install $RUBY_VERSION && rbenv rehash && rbenv global $RUBY_VERSION
 
 # Install Python
-export PYTHON_VERSION=3.8.5
+export PYTHON_VERSION=3.13.0
 sudo apt-get install -y zlib1g-dev libbz2-dev libffi-dev libsqlite3-dev liblzma-dev libmariadb-dev pkgconf
 sudo apt-get clean
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
