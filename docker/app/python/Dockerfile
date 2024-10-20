@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=ishocon1-app-base:latest
 FROM ${BASE_IMAGE}
 
-ENV PYTHON_VERSION=3.8.5
+ENV PYTHON_VERSION=3.13.0
 
 # Python のインストール
 RUN sudo apt-get update && \
