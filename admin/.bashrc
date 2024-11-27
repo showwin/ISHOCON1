@@ -12,3 +12,4 @@ export ISHOCON1_DB_PORT=3306
 export ISHOCON1_DB_USER="ishocon"
 export ISHOCON1_DB_PASSWORD="ishocon"
 export ISHOCON1_DB_NAME="ishocon1"
+export ISHOCON1_DB_BENCH_NAME="ishocon1_bench"

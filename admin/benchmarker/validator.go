@@ -14,6 +14,7 @@ import (
 
 // 初期化確認
 func validateInitialize() {
+	initializeData()
 	validateIndex(10, false)
 	validateProducts(false)
 	validateUsers(1500, false)
@@ -24,6 +25,19 @@ func validateInitialize() {
 	validateUsers(userId, true)
 	sendComment(c, 10000)
 	validateIndex(0, true)
+}
+
+func initializeData() {
+	db, err := getDB()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	_, err = db.Exec("DELETE FROM histories WHERE id > 500000")
+	if err != nil {
+		panic(err.Error())
+	}
 }
 
 func validateIndex(page int, loggedIn bool) {
