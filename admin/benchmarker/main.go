@@ -41,7 +41,7 @@ func getEnv(key, fallback string) string {
 func getDB() (*sql.DB, error) {
 	user := getEnv("ISHOCON1_DB_USER", "ishocon")
 	pass := getEnv("ISHOCON1_DB_PASSWORD", "ishocon")
-	dbname := getEnv("ISHOCON1_DB_NAME", "ishocon1_bench")
+	dbname := getEnv("ISHOCON1_DB_BENCH_NAME", "ishocon1_bench")
 	db, err := sql.Open("mysql", user+":"+pass+"@/"+dbname)
 	return db, err
 }
