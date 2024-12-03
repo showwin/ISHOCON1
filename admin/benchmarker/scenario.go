@@ -168,7 +168,7 @@ func showScore() {
 }
 
 func postScore() {
-	apiURL := os.Getenv("BENCH_PORTAL_APIGW_URL")
+	apiURL := os.Getenv("BENCH_SCOREBOARD_APIGW_URL")
 	teamName := os.Getenv("BENCH_TEAM_NAME")
 	if apiURL == "" && teamName == "" {
 		return
@@ -218,5 +218,5 @@ func postScore() {
 		return
 	}
 	defer resp.Body.Close()
-	log.Print("Sent score to portal site")
+	log.Print("Sent score to scoreboard")
 }
