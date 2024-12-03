@@ -7,12 +7,12 @@ TerraformでISHOCON1の環境が構築できます。
 
 ## 作成されるもの
 * チーム毎に1台の競技に使用するEC2インスタンス
-* 各チームのスコアがリアルタイムに見れるポータルサイト
+* 各チームのスコアがリアルタイムに見れるスコアボード
 
 ## 必要なもの
 
 - 支払情報が紐付けされたAWSアカウント
-  - ポータルサイトは低コストになるように実装していますが、主に以下の費用がかかります。
+  - スコアボードは低コストになるように実装していますが、主に以下の費用がかかります。
     - DynamoDB, Lambda, CloudWatch, API Gateway, S3
 - IAMユーザのアクセスIDとシークレットアクセスキー
 
@@ -55,23 +55,32 @@ ip_addr = {
   "team1" = "11.111.111.111"
   "team2" = "11.111.111.112"
 }
-portal_url = "http://ishocon1-portal123456789.s3-website-ap-northeast-1.amazonaws.com"
+scoreboard_url = "http://ishocon1-scoreboard123456789.s3-website-ap-northeast-1.amazonaws.com"
 ```
 
-Outputに競技で使用するインスタンスのIPアドレスとポータルサイトのアドレスが出力されるので、参加者に共有する。
+Outputに競技で使用するインスタンスのIPアドレスとスコアボードのアドレスが出力されるので、参加者に共有する。
 
 ```
 $ ssh ishocon@<instance_ip>
 ```
 
 でインスタンスにSSHできる。
-ベンチマーカーを実行すると、スコアを `apigateway_url` に投稿するようになっており、自動的にポータルサイトに結果が表示される。
+ベンチマーカーを実行すると、スコアを `apigateway_url` に投稿するようになっており、自動的にスコアボードに結果が表示される。
 
-ポータルサイトに表示されているデータをすべて削除したい場合は以下のコマンドを実行する。
+## スコアボード管理の便利コマンド
 
 ```
-$ terraform output -raw apigateway_url | xargs -I {} curl -X "DELETE" "{}teams"
+$ cd terraform/main
+
+$ make close-scoreboard  # 競技1時間前などにスコアを非表示にする
+$ make reopen-scoreboard  # 非表示にしたスコアボードを再度表示する
+
+$ make freeze-scoreboard  # 競技終了後にベンチマーカーを動かしてもスコアボードに反映されないようにする
+$ make unfreeze-scoreboard  # スコアボードの凍結を解除し、ベンチマーカーの結果がスコアボードに反映されるようにする
+
+$ make delete-scoreboard-data  # [注意] スコアボードに表示されているデータをすべて削除
 ```
+
 
 ## 注意点
 

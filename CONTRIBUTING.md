@@ -34,7 +34,7 @@ Node.js(TypeScript), Crystal, Scala は参考実装が残っていますが、OS
 │   ├── ami         # PackerでAMIの作成 (手動)
 │   ├── benchmarker # ベンチマーカーの実装
 ├── contest         # コンテストのイベント実施用のリソース
-│   ├── portal      # コンテスト用ポータルサイトの実装. Terraformから参照されてS3にアップロードされる
+│   ├── scoreboard  # コンテスト用スコアボードの実装. Terraformから参照されてS3にアップロードされる
 │   └── terraform   # コンテスト用のインフラリソース準備
 ├── doc             # 参加者向けのドキュメント
 ├── docker          # ローカルでISHOCONに取り組む & CIで使う用のDocker Image

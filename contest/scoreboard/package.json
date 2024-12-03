@@ -1,7 +1,7 @@
 {
-  "name": "ISHOCON1-portal",
+  "name": "ISHOCON1-scoreboard",
   "version": "1.0.0",
-  "description": "ISHOCON1 Portal",
+  "description": "ISHOCON1 Scoreboard",
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc"
