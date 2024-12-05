@@ -18,8 +18,8 @@ ${join("\n", [for player_in_team in var.teams[each.value] : "curl https://github
 ${join("\n", [for admin in var.admins : "curl https://github.com/${admin}.keys >> /home/ishocon/.ssh/authorized_keys"])}
 chown -R ishocon:ishocon /home/ishocon/.ssh
 useradd -u 1001 -g 1001 -o -N -d /home/ishocon -s /bin/bash ${each.value}
-echo "export BENCH_TEAM_NAME=${each.value}" >> /home/ishocon/.bashrc
-echo "export BENCH_SCOREBOARD_APIGW_URL=${aws_apigatewayv2_stage.scoreboard.invoke_url}" >> /home/ishocon/.bashrc
+echo 'export BENCH_TEAM_NAME="${each.value}"' >> /home/ishocon/.bashrc
+echo 'export BENCH_SCOREBOARD_APIGW_URL="${aws_apigatewayv2_stage.scoreboard.invoke_url}"' >> /home/ishocon/.bashrc
 
 EOF
 
